@@ -1,0 +1,12 @@
+# Build outputs
+*.o
+*.app
+Makefile
+.qmake.stash
+
+# macOS
+.DS_Store
+
+# Doc
+doc/html/
+doc/latex/
