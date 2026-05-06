@@ -1,0 +1,19 @@
+Jméno sítě:
+    Test2
+Komentář:
+    Druhy test
+Vstupy:
+    btn
+Výstupy:
+    led
+Proměnné:
+    int x = 0
+Místa:
+    A (2)
+    B (0)
+Přechody:
+T_ab :
+    in:  A*1
+    out: B*1
+    when: btn [ ]
+    do: { }
