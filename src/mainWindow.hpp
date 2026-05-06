@@ -6,9 +6,11 @@
 #include <memory>
 #include "petrinet.hpp"
 
-class PetriNet;
 class QGraphicsScene;
 class QGraphicsView;
+class QPlainTextEdit;
+class QLineEdit;
+class NetRunner;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -17,12 +19,21 @@ public:
 
 private slots:
     void onOpen();
+    void onStart();
+    void onStop();
+    void onLogMessage(const QString &msg);
+    void onMarkingChanged();
+    void onInject();
 
 private:
     void loadNet(const QString &path);
     void buildScene();
 
-    QGraphicsScene *m_scene;
-    QGraphicsView  *m_view;
-    std::shared_ptr<PetriNet> m_net;
+    QGraphicsScene            *m_scene;
+    QGraphicsView             *m_view;
+    QPlainTextEdit            *m_log;
+    QLineEdit                 *m_injectName;
+    QLineEdit                 *m_injectValue;
+    std::shared_ptr<PetriNet>  m_net;
+    NetRunner                 *m_runner {nullptr};
 };
