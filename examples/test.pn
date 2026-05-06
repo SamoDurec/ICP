@@ -1,0 +1,20 @@
+Jméno sítě:
+    TOF_PN_5s
+Komentář:
+    Timer to off, jednoducha verzia
+Vstupy:
+    in
+Výstupy:
+    out
+Proměnné:
+    int timeout = 5000
+Místa:
+    IDLE (1)
+    ACTIVE (0)
+    TIMING (0)
+Přechody:
+T_on :
+    in:  IDLE*1
+    out: ACTIVE*1
+    when: in [ ]
+    do: { }
