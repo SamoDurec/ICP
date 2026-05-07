@@ -19,6 +19,7 @@ public:
 
 private slots:
     void onOpen();
+    void onSave();
     void onStart();
     void onStop();
     void onLogMessage(const QString &msg);

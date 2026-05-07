@@ -1,4 +1,4 @@
-// Autori: xdurec00
+// Autori: xdurec00, xpertod00
 // implementacia hlavneho okna
 
 #include "mainWindow.hpp"
@@ -74,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
     // menu
     QMenu *fileMenu = menuBar()->addMenu("File");
     fileMenu->addAction("Open...", this, &MainWindow::onOpen);
+    fileMenu->addAction("Save", this, &MainWindow::onSave);
 
     QMenu *runMenu = menuBar()->addMenu("Run");
     runMenu->addAction("Start", this, &MainWindow::onStart);
@@ -87,6 +88,116 @@ void MainWindow::onOpen()
     QString path = QFileDialog::getOpenFileName(
         this, "Open Petri Net", "", "Petri Net (*.pn);;All files (*)");
     if (!path.isEmpty()) loadNet(path);
+}
+
+void MainWindow::onSave()
+{
+    // nalezeni suboru
+    QString path = QFileDialog::getSaveFileName(
+        this, "Save Petri Net", "", "Petri Net (*.pn);;All files (*)");
+    
+    if (path.isEmpty()) return;
+
+    QFile file(path); // nastaveni cesty
+
+    // otevrenin suboru
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Cannot open file";
+        return;
+    }
+
+    // Zapis do suboru
+    QTextStream out(&file);
+
+    out << QString::fromUtf8("Jméno sítě:\n");
+    out << "\t" << m_net->name() << "\n";    
+
+    out << QString::fromUtf8("Komentář:\n");
+    out << "\t" << m_net->comment() << "\n";
+
+    out << QString::fromUtf8("Vstupy:\n");
+    for (const auto &i : m_net->inputs())
+    {
+        out << "\t"
+            << i
+            << "\n";
+    }
+
+    out << QString::fromUtf8("Výstupy:\n");
+    for (const auto &o : m_net->outputs())
+    {
+        out << "\t"
+            << o
+            << "\n";
+    }
+
+    out << QString::fromUtf8("Proměnné:\n");
+    for (const auto &v : m_net->variables())
+    {
+        out << "\t"
+            << v
+            << "\n";
+    }
+
+    out << QString::fromUtf8("Místa:\n");
+    for (const auto &p : m_net->places())
+    {
+        out << "\t"
+            << p->id()
+            << " "
+            << "("
+            << p->tokens()
+            << ")"
+            << "\n";
+    }
+
+    out << QString::fromUtf8("Přechody:\n");
+    for (const auto &t : m_net->transitions())
+    {
+        out << t->id()
+            << " :\n";
+
+        out << "\tin: ";
+        for (const Arc &a : t->inputArcs())
+        {
+            out << a.placeId
+                << "*"
+                << a.weight
+                << " ";
+        }
+
+        out << "\n\tout: ";
+        for (const Arc &a : t->outputArcs())
+        {
+            out << a.placeId
+                << "*"
+                << a.weight
+                << " ";
+        }
+
+        out << "\n\twhen: "
+            << t->eventName()
+            << " [ "
+            << t->guard()
+            << " ]";
+        if (t->isDelayed())
+        {
+            out << " @ "
+                << t->delayMs();
+        }
+
+        out << "\n\tdo: { "
+            << t->action()
+            << " }";
+        
+    }
+
+    // zavreni suboru
+    file.close();
+
+    qDebug() << "Saved to: " << path;
+
 }
 
 void MainWindow::onStart()
