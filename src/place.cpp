@@ -14,3 +14,8 @@ bool Place::removeTokens(int n) {
     m_tokens -= n;
     return true;
 }
+
+void Place::setId(const QString &id)
+{
+    m_id = id;
+}

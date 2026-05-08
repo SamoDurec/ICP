@@ -79,6 +79,7 @@ MainWindow::MainWindow(QWidget *parent)
     QMenu *runMenu = menuBar()->addMenu("Run");
     runMenu->addAction("Start", this, &MainWindow::onStart);
     runMenu->addAction("Stop",  this, &MainWindow::onStop);
+    runMenu->addAction("Add place", this, &MainWindow::onAddPlace);
 
     loadNet("examples/test.pn");
 }
@@ -216,6 +217,14 @@ void MainWindow::onStart()
 void MainWindow::onStop()
 {
     if (m_runner) m_runner->stop();
+}
+
+void MainWindow::onAddPlace()
+{
+    auto p = m_net->addPlace("UNNAMED", 0);
+    p->setPos(QPointF(0, 0));
+
+    buildScene();
 }
 
 void MainWindow::onInject()

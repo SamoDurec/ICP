@@ -4,6 +4,8 @@
 #include "placeItem.hpp"
 #include "arcItem.hpp"
 #include <QPainter>
+#include <QInputDialog>
+#include <QGraphicsSceneMouseEvent>
 
 PlaceItem::PlaceItem(std::shared_ptr<Place> place, QGraphicsItem *parent)
     : QGraphicsEllipseItem(-R, -R, 2*R, 2*R, parent)
@@ -61,4 +63,25 @@ QVariant PlaceItem::itemChange(GraphicsItemChange change, const QVariant &value)
     }
 
     return QGraphicsEllipseItem::itemChange(change, value);
+}
+
+void PlaceItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    Q_UNUSED(event);
+
+    bool ok;
+
+    QString newId = QInputDialog::getText(
+        nullptr,
+        "Edit place",
+        "Place name: ",
+        QLineEdit::Normal,
+        m_place->id(),
+        &ok);
+    
+    if (ok && !newId.isEmpty())
+    {
+        m_place->setId(newId);
+        update();
+    }
 }

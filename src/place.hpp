@@ -1,8 +1,9 @@
-// Autori: xdurecs00, x
+// Autori: xdurecs00, xpertod00
 // place v Petriho sieti
 
 #pragma once
 #include <QString>
+#include <QPointF>
 
 class Place {
 public:
@@ -16,8 +17,17 @@ public:
     void    addTokens(int n)     { m_tokens += n; }
     bool    removeTokens(int n);
 
+    QPointF pos() const {return m_pos; }
+    void setPos(const QPointF &p)
+    {
+        m_pos = p;
+    }
+
+    void setId(const QString &id);
+
 private:
     QString m_id;
     int     m_initialTokens;
     int     m_tokens;
+    QPointF m_pos;
 };

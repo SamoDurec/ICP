@@ -22,6 +22,7 @@ private slots:
     void onSave();
     void onStart();
     void onStop();
+    void onAddPlace();
     void onLogMessage(const QString &msg);
     void onMarkingChanged();
     void onInject();
