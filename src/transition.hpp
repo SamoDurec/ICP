@@ -4,6 +4,7 @@
 #pragma once
 #include <QString>
 #include <QVector>
+#include <QPointF>
 
 // Hrana s vahou: id miesta + pocet tokenov
 struct Arc {
@@ -31,6 +32,14 @@ public:
     void addInputArc (const Arc &a)     { m_inputArcs.append(a); }
     void addOutputArc(const Arc &a)     { m_outputArcs.append(a); }
 
+    QPointF pos() const {return m_pos; }
+    void setPos(const QPointF &p)
+    {
+        m_pos = p;
+    }
+
+    void setId(const QString &id);
+
 private:
     QString      m_id;
     QString      m_eventName;
@@ -39,4 +48,5 @@ private:
     QString      m_action;
     QVector<Arc> m_inputArcs;
     QVector<Arc> m_outputArcs;
+    QPointF      m_pos;
 };

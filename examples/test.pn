@@ -18,3 +18,8 @@ T_on :
     out: ACTIVE*1
     when: in [ ]
     do: { }
+T_off :
+    in: ACTIVE*0
+    out: 
+    when: in [ ]
+    do: { }

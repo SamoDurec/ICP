@@ -23,6 +23,11 @@ private slots:
     void onStart();
     void onStop();
     void onAddPlace();
+    void onDeletePlace();
+    void onAddTransition();
+    void onDeleteTransition();
+    void onAddArc();
+    void onDeleteArc();
     void onLogMessage(const QString &msg);
     void onMarkingChanged();
     void onInject();

@@ -27,6 +27,8 @@ protected:
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
+
 private:
     std::shared_ptr<Transition> m_transition;
     QVector<ArcItem*> m_arcs;

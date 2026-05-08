@@ -80,6 +80,11 @@ MainWindow::MainWindow(QWidget *parent)
     runMenu->addAction("Start", this, &MainWindow::onStart);
     runMenu->addAction("Stop",  this, &MainWindow::onStop);
     runMenu->addAction("Add place", this, &MainWindow::onAddPlace);
+    runMenu->addAction("Delete place", this, &MainWindow::onDeletePlace);
+    runMenu->addAction("Add transition", this, &MainWindow::onAddTransition);
+    runMenu->addAction("Delete transition", this, &MainWindow::onDeleteTransition);
+    runMenu->addAction("Add arc", this, &MainWindow::onAddArc);
+    runMenu->addAction("Delete arc", this, &MainWindow::onDeleteArc);
 
     loadNet("examples/test.pn");
 }
@@ -225,6 +230,34 @@ void MainWindow::onAddPlace()
     p->setPos(QPointF(0, 0));
 
     buildScene();
+}
+
+void MainWindow::onDeletePlace()
+{
+    //to be filled
+}
+
+void MainWindow::onAddTransition()
+{
+    auto t = m_net->addTransition("Unnamed");
+    t->setPos(QPointF(0, 0));
+
+    buildScene();
+}
+
+void MainWindow::onDeleteTransition()
+{
+    // to be filled
+}
+
+void MainWindow::onAddArc()
+{
+    // to be filled
+}
+
+void MainWindow::onDeleteArc()
+{
+    //to be filled
 }
 
 void MainWindow::onInject()

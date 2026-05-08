@@ -4,6 +4,8 @@
 #include "transitionItem.hpp"
 #include "arcItem.hpp"
 #include <QPainter>
+#include <QInputDialog>
+#include <QGraphicsSceneMouseEvent>
 
 TransitionItem::TransitionItem(std::shared_ptr<Transition> transition,
                                QGraphicsItem *parent)
@@ -50,4 +52,25 @@ QVariant TransitionItem::itemChange(GraphicsItemChange change, const QVariant &v
     }
 
     return QGraphicsRectItem::itemChange(change, value);
+}
+
+void TransitionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    Q_UNUSED(event);
+
+    bool ok;
+
+    QString newId = QInputDialog::getText(
+        nullptr,
+        "Edit transition",
+        "Place transition: ",
+        QLineEdit::Normal,
+        m_transition->id(),
+        &ok);
+    
+    if (ok && !newId.isEmpty())
+    {
+        m_transition->setId(newId);
+        update();
+    }
 }

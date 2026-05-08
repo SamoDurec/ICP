@@ -1,27 +1,68 @@
 Jméno sítě:
-	Test 3
+    SmartLamp
+
 Komentář:
-	easy testovací případ
+    Lamp controller with manual button, auto-off and blinking mode
+
 Vstupy:
-	red
-	green
+    btn
+    sensor
+
 Výstupy:
-	red 
-	green
+    led
+
 Proměnné:
-	int r = 0
-	int g = 2
+    int mode = 0
+    int counter = 0
+
 Místa:
-	RED (1)
-	GREEN (0)
+    OFF (1)
+    ON (0)
+    BLINK (0)
+    WAIT (0)
+
 Přechody:
-T_to_green :
-	in: red*1 
-	out: green*1 
-	when: red [  ]
-	do: {  }
-T_to_red :
-	in: green*1
-	out: red*1
-	when: green  [ ]
-	do: { output("red", r)}
+
+T_btn_toggle :
+    in: OFF*1
+    out: ON*1
+    when: btn [ ]
+    do: { mode = 1; output("led", "ON"); }
+
+T_btn_off :
+    in: ON*1
+    out: OFF*1
+    when: btn [ ]
+    do: { mode = 0; output("led", "OFF"); }
+
+T_auto_off :
+    in: ON*1
+    out: OFF*1
+    when: sensor [ ]
+    do: { output("led", "OFF"); }
+
+T_to_blink :
+    in: ON*1
+    out: BLINK*1
+    when: sensor [ ]
+    do: { mode = 2; counter = 0; }
+
+T_blink_tick :
+    in: BLINK*1
+    out: BLINK*1
+    when: [counter < 10] @ 1000
+    do: {
+        counter = counter + 1;
+        if (counter % 2 == 0)
+            output("led", "ON");
+        else
+            output("led", "OFF");
+    }
+
+T_blink_stop :
+    in: BLINK*1
+    out: OFF*1
+    when: [counter >= 10]
+    do: {
+        output("led", "OFF");
+    }
