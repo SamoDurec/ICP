@@ -1,7 +1,8 @@
-// Autori: xdurec00
+// Autori: xdurec00, xpertod00
 // graficka reprezentacia miesta
 
 #include "placeItem.hpp"
+#include "arcItem.hpp"
 #include <QPainter>
 
 PlaceItem::PlaceItem(std::shared_ptr<Place> place, QGraphicsItem *parent)
@@ -9,6 +10,7 @@ PlaceItem::PlaceItem(std::shared_ptr<Place> place, QGraphicsItem *parent)
     , m_place(place)
 {
     setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     setFlag(QGraphicsItem::ItemIsSelectable);
     setPen(QPen(Qt::black, 2));
 }
@@ -41,4 +43,22 @@ void PlaceItem::paint(QPainter *painter,
                           Qt::AlignCenter,
                           QString::number(m_place->tokens()));
     }
+}
+
+void PlaceItem::addArc(ArcItem *arc)
+{
+    m_arcs.append(arc);
+}
+
+QVariant PlaceItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionHasChanged)
+    {
+        for(ArcItem *arc : m_arcs)
+        {
+            arc->updateGeometry();
+        }
+    }
+
+    return QGraphicsEllipseItem::itemChange(change, value);
 }

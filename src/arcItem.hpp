@@ -1,4 +1,4 @@
-// Autori: xdurec00
+// Autori: xdurec00, xpertod00
 // graficka reprezentacia hrany
 
 #pragma once
@@ -22,4 +22,5 @@ private:
     QGraphicsItem *m_from;
     QGraphicsItem *m_to;
     int            m_weight;
+    QPointF edgePoint(QGraphicsItem *item, const QPointF &to);
 };

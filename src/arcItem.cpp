@@ -1,4 +1,4 @@
-// Autori: xdurec00
+// Autori: xdurec00, xpertod00
 // graficka reprezentacia hrany
 
 #include "arcItem.hpp"
@@ -19,9 +19,51 @@ ArcItem::ArcItem(QGraphicsItem *from, QGraphicsItem *to,
 
 void ArcItem::updateGeometry()
 {
-    QPointF src = m_from->mapToScene(m_from->boundingRect().center());
-    QPointF dst = m_to->mapToScene(m_to->boundingRect().center());
+    // najde stred objektu
+    QPointF srcCenter = m_from->mapToScene(m_from->boundingRect().center());
+    QPointF dstCenter = m_to->mapToScene(m_to->boundingRect().center());
+
+    // spojnice stredu
+    QLineF centerLine(srcCenter, dstCenter);
+
+    // nevykresluj, pokud je hrana prilis kratka
+    if (centerLine.length() < 1.0) return;
+
+    // posunuti koncu car
+    QPointF src = edgePoint(m_from, dstCenter);
+    QPointF dst = edgePoint(m_to, srcCenter);
+
     setLine(QLineF(src, dst));
+}
+
+QPointF ArcItem::edgePoint(QGraphicsItem *item, const QPointF &to)
+{
+    // slouzi k nalezeni okraju mist a přechodu, aby se spravne vykreslovaly hrany
+    // hleda okraj pro obdelnik, coz by melo fungovat i pro kruh
+    QRectF rect = item->sceneBoundingRect();
+
+    QPointF center = rect.center();
+
+    QLineF line(center, to);
+
+    // nastaveni hran
+    QList<QLineF> edges = {
+        QLineF(rect.topLeft(), rect.topRight()),
+        QLineF(rect.topRight(), rect.bottomRight()),
+        QLineF(rect.bottomRight(), rect.bottomLeft()),
+        QLineF(rect.bottomLeft(), rect.topLeft())
+    };
+
+    QPointF intersection;
+
+    for (const QLineF &edge : edges)
+    {
+        auto type = line.intersects(edge, &intersection);
+
+        if (type == QLineF::BoundedIntersection) return intersection;
+    }
+
+    return center;
 }
 
 QRectF ArcItem::boundingRect() const
@@ -38,7 +80,7 @@ void ArcItem::paint(QPainter *painter,
     QLineF l = line();
     if (l.length() < 1.0) return;
 
-    painter->setPen(QPen(Qt::white, 1.5));
+    painter->setPen(QPen(Qt::black, 1.5));
     painter->drawLine(l);
 
     // sipka na konci

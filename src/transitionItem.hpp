@@ -1,10 +1,12 @@
-// Autori: xdurec00
+// Autori: xdurec00, xpertod00
 // graficka reprezentacia prechodu
 
 #pragma once
 #include <QGraphicsRectItem>
 #include <memory>
 #include "transition.hpp"
+
+class ArcItem;
 
 class TransitionItem : public QGraphicsRectItem {
 public:
@@ -16,11 +18,16 @@ public:
 
     void refresh();
 
+    void addArc(ArcItem *arc);
+
 protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget) override;
 
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
+
 private:
     std::shared_ptr<Transition> m_transition;
+    QVector<ArcItem*> m_arcs;
 };

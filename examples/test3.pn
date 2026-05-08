@@ -1,20 +1,27 @@
 Jméno sítě:
-	TOF_PN_5s
+	Test 3
 Komentář:
-	Timer to off, jednoducha verzia
+	easy testovací případ
 Vstupy:
-	in
+	red
+	green
 Výstupy:
-	out
+	red 
+	green
 Proměnné:
-	int timeout = 5000
+	int r = 0
+	int g = 2
 Místa:
-	IDLE (1)
-	ACTIVE (0)
-	TIMING (0)
+	RED (1)
+	GREEN (0)
 Přechody:
-T_on :
-	in: IDLE*1 
-	out: ACTIVE*1 
-	when: in [  ]
+T_to_green :
+	in: red*1 
+	out: green*1 
+	when: red [  ]
 	do: {  }
+T_to_red :
+	in: green*1
+	out: red*1
+	when: green  [ ]
+	do: { output("red", r)}

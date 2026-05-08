@@ -14,7 +14,7 @@
 #include <QPushButton>
 #include <QMenuBar>
 #include <QFileDialog>
-#include <QMessageBox>
+#include <QMessageBox> 
 #include <QSplitter>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -283,11 +283,34 @@ void MainWindow::buildScene()
         if (!tItem) continue;
         for (const auto &arc : t->inputArcs()) {
             QGraphicsItem *pItem = items[arc.placeId];
-            if (pItem) m_scene->addItem(new ArcItem(pItem, tItem, arc.weight));
+            if (pItem)
+            {
+                ArcItem *line = new ArcItem(pItem, tItem, arc.weight);
+
+                m_scene->addItem(line);
+
+                auto *placeItem = dynamic_cast<PlaceItem*>(pItem);
+                auto *transitionItem = dynamic_cast<TransitionItem*>(tItem);
+
+                if (placeItem) placeItem->addArc(line);
+                if (transitionItem) transitionItem->addArc(line);
+            }
         }
+
         for (const auto &arc : t->outputArcs()) {
             QGraphicsItem *pItem = items[arc.placeId];
-            if (pItem) m_scene->addItem(new ArcItem(tItem, pItem, arc.weight));
+            if (pItem)
+            {
+                ArcItem *line = new ArcItem(pItem, tItem, arc.weight);
+
+                m_scene->addItem(line);
+
+                auto *placeItem = dynamic_cast<PlaceItem*>(pItem);
+                auto *transitionItem = dynamic_cast<TransitionItem*>(tItem);
+
+                if (placeItem) placeItem->addArc(line);
+                if (transitionItem) transitionItem->addArc(line);
+            }
         }
     }
 }

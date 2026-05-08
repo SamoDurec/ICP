@@ -1,7 +1,8 @@
-// Autori: xdurec00
+// Autori: xdurec00, xpertod00
 // graficka reprezentacia prechodu
 
 #include "transitionItem.hpp"
+#include "arcItem.hpp"
 #include <QPainter>
 
 TransitionItem::TransitionItem(std::shared_ptr<Transition> transition,
@@ -10,6 +11,7 @@ TransitionItem::TransitionItem(std::shared_ptr<Transition> transition,
     , m_transition(transition)
 {
     setFlag(QGraphicsItem::ItemIsMovable);
+    setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     setFlag(QGraphicsItem::ItemIsSelectable);
     setPen(QPen(Qt::black, 2));
 }
@@ -30,4 +32,22 @@ void TransitionItem::paint(QPainter *painter,
 
     painter->setFont(QFont("Arial", 9, QFont::Bold));
     painter->drawText(boundingRect(), Qt::AlignCenter, m_transition->id());
+}
+
+void TransitionItem::addArc(ArcItem *arc)
+{
+    m_arcs.append(arc);
+}
+
+QVariant TransitionItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    if (change == ItemPositionHasChanged)
+    {
+        for(ArcItem *arc : m_arcs)
+        {
+            arc->updateGeometry();
+        }
+    }
+
+    return QGraphicsRectItem::itemChange(change, value);
 }
