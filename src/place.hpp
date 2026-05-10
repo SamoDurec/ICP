@@ -24,6 +24,7 @@ public:
     }
 
     void setId(const QString &id);
+    void setTokens(int t);
 
 private:
     QString m_id;

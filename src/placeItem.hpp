@@ -19,6 +19,12 @@ public:
 
     void addArc(ArcItem *arc); // posuvanie hran pri posunu miest
 
+    // pointer pre mazanie miest
+    std::shared_ptr<Place> place() const
+    {
+        return m_place;
+    }
+
 protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,

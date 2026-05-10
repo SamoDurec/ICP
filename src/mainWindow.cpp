@@ -234,7 +234,20 @@ void MainWindow::onAddPlace()
 
 void MainWindow::onDeletePlace()
 {
-    //to be filled
+    auto selected = m_scene->selectedItems();
+
+    for(auto *item : selected)
+    {
+        auto *placeItem = dynamic_cast<PlaceItem*>(item);
+
+        if(!placeItem) continue;
+
+        QString id = placeItem->place()->id();
+
+        m_net->removePlace(id);
+    }
+
+    buildScene();
 }
 
 void MainWindow::onAddTransition()

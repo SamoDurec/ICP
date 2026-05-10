@@ -29,6 +29,7 @@ public:
     // miesta
     std::shared_ptr<Place> addPlace(const QString &id, int tokens = 0);
     std::shared_ptr<Place> findPlace(const QString &id) const;
+    void removePlace(const QString &id);
     const QVector<std::shared_ptr<Place>> &places() const { return m_places; }
 
     // prechody

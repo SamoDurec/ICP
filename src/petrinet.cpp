@@ -16,6 +16,39 @@ std::shared_ptr<Place> PetriNet::findPlace(const QString &id) const {
     return nullptr;
 }
 
+void PetriNet::removePlace(const QString &id)
+{
+    // prejde miesta a odstrani pozadovane
+    for (int i = 0; i < m_places.size(); i++)
+    {
+        if (m_places[i]->id() == id)
+        {
+            m_places.removeAt(i);
+            break;
+        }
+    }
+
+    // odstrani hrany z prechodov
+    for (auto &t : m_transitions)
+    {
+        QVector<Arc> newInputs;
+        QVector<Arc>newOutputs;
+
+        for(const auto &a : t->inputArcs())
+        {
+            if (a.placeId != id) newInputs.append(a);
+        }
+
+        for(const auto &a : t->outputArcs())
+        {
+            if (a.placeId != id) newOutputs.append(a);
+        }
+
+        t->setInputArcs(newInputs);
+        t->setOutputArcs(newOutputs);
+    }
+}
+
 std::shared_ptr<Transition> PetriNet::addTransition(const QString &id) {
     auto t = std::make_shared<Transition>(id);
     m_transitions.append(t);

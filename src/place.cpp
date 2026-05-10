@@ -19,3 +19,8 @@ void Place::setId(const QString &id)
 {
     m_id = id;
 }
+
+void Place::setTokens(int t)
+{
+    m_tokens = t;
+}

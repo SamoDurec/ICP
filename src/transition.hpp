@@ -31,6 +31,8 @@ public:
     void setAction   (const QString &a) { m_action = a; }
     void addInputArc (const Arc &a)     { m_inputArcs.append(a); }
     void addOutputArc(const Arc &a)     { m_outputArcs.append(a); }
+    void setInputArcs(const QVector<Arc> &arcs) { m_inputArcs = arcs; }
+    void setOutputArcs(const QVector<Arc> &arcs) { m_outputArcs = arcs; }
 
     QPointF pos() const {return m_pos; }
     void setPos(const QPointF &p)

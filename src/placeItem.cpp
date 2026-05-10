@@ -31,6 +31,10 @@ void PlaceItem::paint(QPainter *painter,
     QColor bg = (m_place->tokens() > 0) ? QColor(180, 230, 180) : Qt::white;
     painter->setBrush(bg);
     painter->setPen(QPen(Qt::black, 2));
+
+    // obrys na zakliknutem miste
+    if (isSelected()) painter->setPen(QPen(Qt::gray, 3));
+
     painter->drawEllipse(boundingRect());
 
     // meno miesta
@@ -71,6 +75,7 @@ void PlaceItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
     bool ok;
 
+    // editacia mena
     QString newId = QInputDialog::getText(
         nullptr,
         "Edit place",
@@ -78,10 +83,23 @@ void PlaceItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         QLineEdit::Normal,
         m_place->id(),
         &ok);
+
+    if (!ok || newId.isEmpty()) return;
+
+    // editacia tokenov
+    int tokens = QInputDialog::getInt(
+        nullptr,
+        "Edit tokens",
+        "Tokens: ",
+        m_place->tokens(),
+        0,
+        999999,
+        1,
+        &ok);
+
+    if (!ok) return;
     
-    if (ok && !newId.isEmpty())
-    {
-        m_place->setId(newId);
-        update();
-    }
+    m_place->setId(newId);
+    m_place->setTokens(tokens);
+    update();
 }
