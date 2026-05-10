@@ -15,14 +15,16 @@ Místa:
 	Hello (0)
 Přechody:
 T_on :
-	in: IDLE*1 
+	in: IDLE*1 ACTIVE*0 
 	out: ACTIVE*1 
 	when: in [  ]
-	do: {  }T_off :
-	in: ACTIVE*0 
-	out: 
-	when: in [  ]
-	do: {  }New transition :
+	do: {  }
+New transition :
+	in: 
+	out: TIMING*1 
+	when:  [  ]
+	do: {  }
+idk :
 	in: 
 	out: 
 	when:  [  ]

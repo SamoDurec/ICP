@@ -12,6 +12,7 @@ ArcItem::ArcItem(QGraphicsItem *from, QGraphicsItem *to,
     , m_to(to)
     , m_weight(weight)
 {
+    setFlag(QGraphicsItem::ItemIsSelectable);
     setZValue(-1); // kreslí sa pod miestami a prechodmi
     setPen(QPen(Qt::white, 1.5));
     updateGeometry();
@@ -80,7 +81,8 @@ void ArcItem::paint(QPainter *painter,
     QLineF l = line();
     if (l.length() < 1.0) return;
 
-    painter->setPen(QPen(Qt::black, 1.5));
+    if (isSelected()) painter->setPen(QPen(Qt::gray, 1.5));
+    else painter->setPen(QPen(Qt::black, 1.5));
     painter->drawLine(l);
 
     // sipka na konci

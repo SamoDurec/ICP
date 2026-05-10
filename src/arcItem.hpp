@@ -11,6 +11,21 @@ public:
 
     void updateGeometry(); // prepocita polohu sipky
 
+    QGraphicsItem* fromItem() const
+    {
+        return m_from;
+    }
+
+    QGraphicsItem* toItem() const
+    {
+        return m_to;
+    }
+
+    int weight() const
+    {
+        return m_weight;
+    }
+
 protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,

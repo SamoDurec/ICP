@@ -204,7 +204,7 @@ void MainWindow::onSave()
 
         out << "\n\tdo: { "
             << t->action()
-            << " }";
+            << " }\n";
         
     }
 
@@ -371,7 +371,49 @@ void MainWindow::onSceneSelectionChanged()
 
 void MainWindow::onDeleteArc()
 {
-    //to be filled
+    auto selected = m_scene->selectedItems();
+
+    if(selected.isEmpty()) return;
+
+    auto *arcItem = dynamic_cast<ArcItem*>(selected.first());
+
+    if(!arcItem)
+    {
+        m_log->appendPlainText("Select arc");
+        return;
+    }
+
+    auto *from = arcItem->fromItem();
+    auto *to = arcItem->toItem();
+
+    auto *p1 = dynamic_cast<PlaceItem*>(from);
+    auto *t1 = dynamic_cast<TransitionItem*>(from);
+    auto *p2 = dynamic_cast<PlaceItem*>(to);
+    auto *t2 = dynamic_cast<TransitionItem*>(to);
+
+    if (p1 && t2) { // place -> transition
+        QString pid = p1->place()->id();
+        QVector<Arc> arcs;
+
+        for (const auto &a : t2->transition()->inputArcs())
+        {
+            if (a.placeId != pid) arcs.append(a);
+        }
+
+        t2->transition()->setInputArcs(arcs);
+    } else if (t1 && p2) { // transition -> place
+        QString pid = p2->place()->id();
+        QVector<Arc> arcs;
+
+        for (const auto &a : t1->transition()->outputArcs())
+        {
+            if (a.placeId != pid) arcs.append(a);
+        }
+
+        t1->transition()->setOutputArcs(arcs);
+    } 
+
+    buildScene();
 }
 
 void MainWindow::onInject()

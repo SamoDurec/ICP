@@ -72,8 +72,6 @@ void PetriNet::removeTransition(const QString &id)
             break;
         }
     }
-
-    // odstani hrany z miest
 }
 
 void PetriNet::resetMarking() {
