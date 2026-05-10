@@ -11,11 +11,15 @@ class QGraphicsView;
 class QPlainTextEdit;
 class QLineEdit;
 class NetRunner;
+class QGraphicsItem;
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = nullptr);
+
+    QGraphicsItem *m_arcStart = nullptr;
+    bool m_addArcMode = false;
 
 private slots:
     void onOpen();
@@ -25,6 +29,7 @@ private slots:
     void onAddPlace();
     void onDeletePlace();
     void onAddTransition();
+    void onSceneSelectionChanged();
     void onDeleteTransition();
     void onAddArc();
     void onDeleteArc();

@@ -34,6 +34,13 @@ MainWindow::MainWindow(QWidget *parent)
     m_view = new QGraphicsView(m_scene, this);
     m_view->setRenderHint(QPainter::Antialiasing);
 
+    // umozneni zakliknuti objektu pro vytvoreni nove hrany
+    connect(
+        m_scene,
+        &QGraphicsScene::selectionChanged,
+        this,
+        &MainWindow::onSceneSelectionChanged);
+
     // log
     m_log = new QPlainTextEdit(this);
     m_log->setReadOnly(true);
@@ -79,12 +86,14 @@ MainWindow::MainWindow(QWidget *parent)
     QMenu *runMenu = menuBar()->addMenu("Run");
     runMenu->addAction("Start", this, &MainWindow::onStart);
     runMenu->addAction("Stop",  this, &MainWindow::onStop);
-    runMenu->addAction("Add place", this, &MainWindow::onAddPlace);
-    runMenu->addAction("Delete place", this, &MainWindow::onDeletePlace);
-    runMenu->addAction("Add transition", this, &MainWindow::onAddTransition);
-    runMenu->addAction("Delete transition", this, &MainWindow::onDeleteTransition);
-    runMenu->addAction("Add arc", this, &MainWindow::onAddArc);
-    runMenu->addAction("Delete arc", this, &MainWindow::onDeleteArc);
+
+    QMenu *modifyMenu = menuBar()->addMenu("Modify");
+    modifyMenu->addAction("Add place", this, &MainWindow::onAddPlace);
+    modifyMenu->addAction("Delete place", this, &MainWindow::onDeletePlace);
+    modifyMenu->addAction("Add transition", this, &MainWindow::onAddTransition);
+    modifyMenu->addAction("Delete transition", this, &MainWindow::onDeleteTransition);
+    modifyMenu->addAction("Add arc", this, &MainWindow::onAddArc);
+    modifyMenu->addAction("Delete arc", this, &MainWindow::onDeleteArc);
 
     loadNet("examples/test.pn");
 }
@@ -260,12 +269,104 @@ void MainWindow::onAddTransition()
 
 void MainWindow::onDeleteTransition()
 {
-    // to be filled
+    auto selected = m_scene->selectedItems();
+
+    for (auto *item : selected)
+    {
+        auto *tItem = dynamic_cast<TransitionItem*>(item);
+
+        if (!tItem) continue;
+
+        QString id = tItem->transition()->id();
+
+        m_net->removeTransition(id);
+    }
+
+    buildScene();
 }
 
+// aktivuje pridani hrany
 void MainWindow::onAddArc()
 {
-    // to be filled
+    m_addArcMode = true;
+    m_arcStart = nullptr;
+
+    m_log->appendPlainText("Click source and target");
+
+}
+
+// zaznamena kliknuti na objekty a prida hranu
+void MainWindow::onSceneSelectionChanged()
+{
+    if(!m_addArcMode) return;
+
+    auto selected = m_scene->selectedItems();
+
+    if(selected.isEmpty()) return;
+
+    // prvy klik
+    QGraphicsItem *clicked = selected.first();
+
+    if (!clicked) return;
+
+    if (!m_arcStart)
+    {
+        m_arcStart = clicked;
+        m_log->appendPlainText("Source selected");
+        return;
+    }
+
+    // druhy klik
+
+    if (clicked == m_arcStart) return; // zabran self-loop
+
+    auto from = m_arcStart;
+    auto to = clicked;
+
+    auto *p1 = dynamic_cast<PlaceItem*>(from);
+    auto *t1 = dynamic_cast<TransitionItem*>(from);
+    auto *p2 = dynamic_cast<PlaceItem*>(to);
+    auto *t2 = dynamic_cast<TransitionItem*>(to);
+
+    if ((!p1 && !t1) || (!p2 && !t2))
+    {
+        m_log->appendPlainText("Invalid source or destination");
+        m_addArcMode = false;
+        m_arcStart = nullptr;
+
+        return;
+    }
+
+    if (p1 && t2) // place -> transition
+    {
+        Arc a;
+        a.placeId = p1->place()->id();
+        a.weight = 1;
+
+        t2->transition()->addInputArc(a);
+    } else if (t1 && p2) // transition -> place
+    {
+        Arc a;
+        a.placeId = p2->place()->id();
+        a.weight = 1;
+
+        t1->transition()->addOutputArc(a);
+    } else if (p1 && p2) {
+        m_log->appendPlainText("Arc cannot lead between two places");
+        m_addArcMode = false;
+        m_arcStart = nullptr;
+        return;
+    } else {
+        m_log->appendPlainText("Arc cannot lead between two transitions");
+        m_addArcMode = false;
+        m_arcStart = nullptr;
+        return;
+    }
+
+    m_addArcMode = false;
+    m_arcStart = nullptr;
+
+    buildScene();
 }
 
 void MainWindow::onDeleteArc()
@@ -356,7 +457,7 @@ void MainWindow::buildScene()
             QGraphicsItem *pItem = items[arc.placeId];
             if (pItem)
             {
-                ArcItem *line = new ArcItem(pItem, tItem, arc.weight);
+                ArcItem *line = new ArcItem(tItem, pItem, arc.weight);
 
                 m_scene->addItem(line);
 

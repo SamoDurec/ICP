@@ -35,6 +35,7 @@ public:
     // prechody
     std::shared_ptr<Transition> addTransition(const QString &id);
     std::shared_ptr<Transition> findTransition(const QString &id) const;
+    void removeTransition(const QString &id);
     const QVector<std::shared_ptr<Transition>> &transitions() const { return m_transitions; }
 
     // runtime

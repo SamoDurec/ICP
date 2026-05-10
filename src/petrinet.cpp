@@ -61,6 +61,21 @@ std::shared_ptr<Transition> PetriNet::findTransition(const QString &id) const {
     return nullptr;
 }
 
+void PetriNet::removeTransition(const QString &id)
+{
+    // prejde prechody a odstrani pozadovane
+    for (int i = 0; i < m_transitions.size(); i++)
+    {
+        if (m_transitions[i]->id() == id)
+        {
+            m_transitions.removeAt(i);
+            break;
+        }
+    }
+
+    // odstani hrany z miest
+}
+
 void PetriNet::resetMarking() {
     for (auto &p : m_places) p->reset();
 }

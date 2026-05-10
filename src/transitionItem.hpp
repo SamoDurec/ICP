@@ -20,6 +20,12 @@ public:
 
     void addArc(ArcItem *arc);
 
+    // pointer pre mazanie transitions
+    std::shared_ptr<Transition> transition() const
+    {
+        return m_transition;
+    }
+
 protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,

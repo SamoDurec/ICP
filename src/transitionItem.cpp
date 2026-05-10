@@ -30,6 +30,10 @@ void TransitionItem::paint(QPainter *painter,
 
     painter->setBrush(Qt::white);
     painter->setPen(QPen(Qt::black, 2));
+
+    // obrys na zakliknutem miste
+    if (isSelected()) painter->setPen(QPen(Qt::gray, 3));
+
     painter->drawRect(boundingRect());
 
     painter->setFont(QFont("Arial", 9, QFont::Bold));
