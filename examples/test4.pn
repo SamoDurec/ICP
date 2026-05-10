@@ -12,20 +12,14 @@ Místa:
 	IDLE (1)
 	ACTIVE (0)
 	TIMING (0)
-	Hello (0)
 Přechody:
 T_on :
-	in: IDLE*1 ACTIVE*0 
+	in: IDLE*1 
 	out: ACTIVE*1 
-	when: in [  ]
-	do: {  }
-New transition :
-	in: 
-	out: TIMING*1 
-	when:  [  ]
-	do: {  }
-idk :
-	in: 
+	when: buttonPressed [ x > 5 ] @ 500
+	do: { x = x + 1 }
+T_off :
+	in: ACTIVE*0 
 	out: 
-	when:  [  ]
+	when: in [  ]
 	do: {  }

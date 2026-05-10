@@ -51,7 +51,7 @@ QVariant TransitionItem::itemChange(GraphicsItemChange change, const QVariant &v
     {
         for(ArcItem *arc : m_arcs)
         {
-            arc->updateGeometry();
+            if (arc) arc->updateGeometry();
         }
     }
 
@@ -64,6 +64,7 @@ void TransitionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
     bool ok;
 
+    // id
     QString newId = QInputDialog::getText(
         nullptr,
         "Edit transition",
@@ -72,9 +73,59 @@ void TransitionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         m_transition->id(),
         &ok);
     
-    if (ok && !newId.isEmpty())
-    {
-        m_transition->setId(newId);
-        update();
-    }
+    if(!ok) return;
+
+    // event
+    QString eventName = QInputDialog::getText(
+        nullptr,
+        "Edit transition",
+        "Event name: ",
+        QLineEdit::Normal,
+        m_transition->eventName(),
+        &ok);
+
+    if (!ok) return;
+
+    // guard
+    QString guard = QInputDialog::getText(
+        nullptr,
+        "Edit transition",
+        "Guard: ",
+        QLineEdit::Normal,
+        m_transition->guard(),
+        &ok);
+
+    if (!ok) return;
+
+    // delay
+    int delay = QInputDialog::getInt(
+        nullptr,
+        "Edit transition",
+        "Delay (ms or -1 = none): ",
+        m_transition->delayMs(),
+        -1,
+        999999,
+        1,
+        &ok);
+
+    if (!ok) return;
+
+    // action
+    QString action = QInputDialog::getText(
+        nullptr,
+        "Edit transition",
+        "Action: ",
+        QLineEdit::Normal,
+        m_transition->action(),
+        &ok);
+
+    if (!ok) return;
+    
+    m_transition->setId(newId);
+    m_transition->setEventName(eventName);
+    m_transition->setGuard(guard);
+    m_transition->setDelayMs(delay);
+    m_transition->setAction(action);
+
+    update();
 }

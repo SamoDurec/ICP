@@ -62,7 +62,7 @@ QVariant PlaceItem::itemChange(GraphicsItemChange change, const QVariant &value)
     {
         for(ArcItem *arc : m_arcs)
         {
-            arc->updateGeometry();
+            if (arc) arc->updateGeometry();
         }
     }
 

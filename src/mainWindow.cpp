@@ -312,7 +312,6 @@ void MainWindow::onSceneSelectionChanged()
     if (!m_arcStart)
     {
         m_arcStart = clicked;
-        m_log->appendPlainText("Source selected");
         return;
     }
 
