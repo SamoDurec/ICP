@@ -1,4 +1,4 @@
-// Autori: xdurec00
+// Autori: xdurecs00, xpertod00
 // Runtime - spustanie Petriho siete
 
 #pragma once
@@ -17,6 +17,7 @@ public:
     void start();
     void stop();
     bool isRunning() const { return m_running; }
+    bool isPendingTimer(const QString &id) const { return m_timers.contains(id); }
 
     // Injektovanie vstupu zvonku
     void injectInput(const QString &name, const QString &value);

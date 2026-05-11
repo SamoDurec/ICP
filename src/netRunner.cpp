@@ -1,4 +1,4 @@
-// Autori: xdurec00
+// Autori: xdurecs00, xpertod00
 // Implementacia NetRunner
 
 #include "netRunner.hpp"

@@ -1,4 +1,4 @@
-// Autori: xdurec00, xpertod00
+// Autori: xdurecs00, xpertod00
 // implementacia hlavneho okna
 
 #include "mainWindow.hpp"
@@ -21,6 +21,8 @@
 #include <QLabel>
 #include <QMap>
 #include <QDebug>
+#include <QEvent>
+#include <QMouseEvent>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,14 +34,8 @@ MainWindow::MainWindow(QWidget *parent)
     m_scene = new QGraphicsScene(this);
     m_scene->setSceneRect(-1000, -1000, 2000, 2000);
     m_view = new QGraphicsView(m_scene, this);
+    m_view->viewport()->installEventFilter(this);
     m_view->setRenderHint(QPainter::Antialiasing);
-
-    // umozneni zakliknuti objektu pro vytvoreni nove hrany
-    connect(
-        m_scene,
-        &QGraphicsScene::selectionChanged,
-        this,
-        &MainWindow::onSceneSelectionChanged);
 
     // log
     m_log = new QPlainTextEdit(this);
@@ -162,7 +158,7 @@ void MainWindow::onSave()
             << p->id()
             << " "
             << "("
-            << p->tokens()
+            << p->initialTokens()
             << ")"
             << "\n";
     }
@@ -236,7 +232,7 @@ void MainWindow::onStop()
 void MainWindow::onAddPlace()
 {
     auto p = m_net->addPlace("UNNAMED", 0);
-    p->setPos(QPointF(0, 0));
+    p->setPos(QPointF(0, 200));
 
     buildScene();
 }
@@ -262,7 +258,7 @@ void MainWindow::onDeletePlace()
 void MainWindow::onAddTransition()
 {
     auto t = m_net->addTransition("Unnamed");
-    t->setPos(QPointF(0, 0));
+    t->setPos(QPointF(100, 200));
 
     buildScene();
 }
@@ -295,77 +291,61 @@ void MainWindow::onAddArc()
 
 }
 
-// zaznamena kliknuti na objekty a prida hranu
-void MainWindow::onSceneSelectionChanged()
+
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
-    if(!m_addArcMode) return;
+    if (!m_addArcMode) return false;
+    if (obj != m_view->viewport()) return false;
+    if (event->type() != QEvent::MouseButtonPress) return false;
 
-    auto selected = m_scene->selectedItems();
+    auto *me = static_cast<QMouseEvent*>(event);
+    QPointF scenePos = m_view->mapToScene(me->pos());
+    QGraphicsItem *clicked = m_scene->itemAt(scenePos, QTransform());
 
-    if(selected.isEmpty()) return;
+    if (!clicked) return false;
 
-    // prvy klik
-    QGraphicsItem *clicked = selected.first();
+    // ignoruj ArcItem
+    if (dynamic_cast<ArcItem*>(clicked)) return false;
 
-    if (!clicked) return;
-
-    if (!m_arcStart)
-    {
+    if (!m_arcStart) {
         m_arcStart = clicked;
-        return;
+        m_log->appendPlainText("Source selected, click target");
+        return true;
     }
 
-    // druhy klik
+    if (clicked == m_arcStart) return true;
 
-    if (clicked == m_arcStart) return; // zabran self-loop
+    auto *p1 = dynamic_cast<PlaceItem*>(m_arcStart);
+    auto *t1 = dynamic_cast<TransitionItem*>(m_arcStart);
+    auto *p2 = dynamic_cast<PlaceItem*>(clicked);
+    auto *t2 = dynamic_cast<TransitionItem*>(clicked);
 
-    auto from = m_arcStart;
-    auto to = clicked;
-
-    auto *p1 = dynamic_cast<PlaceItem*>(from);
-    auto *t1 = dynamic_cast<TransitionItem*>(from);
-    auto *p2 = dynamic_cast<PlaceItem*>(to);
-    auto *t2 = dynamic_cast<TransitionItem*>(to);
-
-    if ((!p1 && !t1) || (!p2 && !t2))
-    {
-        m_log->appendPlainText("Invalid source or destination");
-        m_addArcMode = false;
-        m_arcStart = nullptr;
-
-        return;
-    }
-
-    if (p1 && t2) // place -> transition
-    {
-        Arc a;
-        a.placeId = p1->place()->id();
-        a.weight = 1;
-
+    if (p1 && t2) {
+        Arc a; a.placeId = p1->place()->id(); a.weight = 1;
         t2->transition()->addInputArc(a);
-    } else if (t1 && p2) // transition -> place
-    {
-        Arc a;
-        a.placeId = p2->place()->id();
-        a.weight = 1;
-
+        m_log->appendPlainText("Arc added");
+    } else if (t1 && p2) {
+        Arc a; a.placeId = p2->place()->id(); a.weight = 1;
         t1->transition()->addOutputArc(a);
-    } else if (p1 && p2) {
-        m_log->appendPlainText("Arc cannot lead between two places");
-        m_addArcMode = false;
-        m_arcStart = nullptr;
-        return;
+        m_log->appendPlainText("Arc added");
     } else {
-        m_log->appendPlainText("Arc cannot lead between two transitions");
-        m_addArcMode = false;
-        m_arcStart = nullptr;
-        return;
+        m_log->appendPlainText("Invalid arc (place->place or transition->transition)");
     }
 
     m_addArcMode = false;
     m_arcStart = nullptr;
-
     buildScene();
+    return true;
+}
+
+
+
+
+// zaznamena kliknuti na objekty a prida hranu
+void MainWindow::onSceneSelectionChanged()
+{
+    
 }
 
 void MainWindow::onDeleteArc()
@@ -437,6 +417,16 @@ void MainWindow::onMarkingChanged()
     for (auto *item : m_scene->items()) {
         if (auto *pi = dynamic_cast<PlaceItem*>(item))
             pi->refresh();
+
+        if (auto *ti = dynamic_cast<TransitionItem*>(item)) {
+            auto t = ti->transition();
+            if (m_runner && m_runner->isPendingTimer(t->id()))
+                ti->setState(TransitionItem::State::PendingTimer);
+            else if (m_net->isEnabled(t))
+                ti->setState(TransitionItem::State::Enabled);
+            else
+                ti->setState(TransitionItem::State::Normal);
+        }
     }
 }
 
@@ -452,15 +442,20 @@ void MainWindow::loadNet(const QString &path)
 
 void MainWindow::buildScene()
 {
+    m_scene->blockSignals(true);
     m_scene->clear();
-    if (!m_net) return;
-
+    if (!m_net) {
+        m_scene->blockSignals(false);
+        return;
+    }
     QMap<QString, QGraphicsItem*> items;
 
     int x = -200;
     for (auto &place : m_net->places()) {
         auto *item = new PlaceItem(place);
-        item->setPos(x, -80);
+        if (place->pos() == QPointF(0, 0))
+            place->setPos(QPointF(x, -80));
+        item->setPos(place->pos());
         m_scene->addItem(item);
         items[place->id()] = item;
         x += 120;
@@ -469,7 +464,9 @@ void MainWindow::buildScene()
     x = -140;
     for (auto &t : m_net->transitions()) {
         auto *item = new TransitionItem(t);
-        item->setPos(x, 80);
+        if (t->pos() == QPointF(0, 0))
+            t->setPos(QPointF(x, 80));
+        item->setPos(t->pos());
         m_scene->addItem(item);
         items[t->id()] = item;
         x += 120;
@@ -510,4 +507,5 @@ void MainWindow::buildScene()
             }
         }
     }
+    m_scene->blockSignals(false);
 }

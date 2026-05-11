@@ -1,4 +1,4 @@
-// Autori: xdurec00, xpertod00
+// Autori: xdurecs00, xpertod00
 // graficka reprezentacia prechodu
 
 #include "transitionItem.hpp"
@@ -28,7 +28,14 @@ void TransitionItem::paint(QPainter *painter,
 {
     Q_UNUSED(option) Q_UNUSED(widget)
 
-    painter->setBrush(Qt::white);
+    QColor bg;
+    switch (m_state) {
+        case State::Enabled:      bg = QColor(255, 255, 160); break; // zlta
+        case State::PendingTimer: bg = QColor(180, 220, 255); break; // modra
+        default:                  bg = Qt::white;             break;
+    }
+
+    painter->setBrush(bg);
     painter->setPen(QPen(Qt::black, 2));
 
     // obrys na zakliknutem miste
@@ -47,11 +54,12 @@ void TransitionItem::addArc(ArcItem *arc)
 
 QVariant TransitionItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    if (change == ItemPositionHasChanged)
-    {
-        for(ArcItem *arc : m_arcs)
-        {
-            if (arc) arc->updateGeometry();
+    if (change == ItemPositionHasChanged) {
+        m_transition->setPos(value.toPointF());
+        for(ArcItem *arc : m_arcs) {
+            if (arc) {
+                arc->updateGeometry();
+            }
         }
     }
 

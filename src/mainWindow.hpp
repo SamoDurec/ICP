@@ -1,4 +1,4 @@
-// Autori: xdurec00
+// Autori: xdurecs00, xpertod00
 // hlavne okno
 
 #pragma once
@@ -40,6 +40,7 @@ private slots:
 private:
     void loadNet(const QString &path);
     void buildScene();
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
     QGraphicsScene            *m_scene;
     QGraphicsView             *m_view;

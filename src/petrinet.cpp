@@ -1,4 +1,4 @@
-// Autori: xdurecs00, x
+// Autori: xdurecs00, xpertod00
 // Implementacia petrinet
 
 #include "petrinet.hpp"

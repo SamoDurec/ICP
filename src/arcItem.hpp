@@ -1,4 +1,4 @@
-// Autori: xdurec00, xpertod00
+// Autori: xdurecs00, xpertod00
 // graficka reprezentacia hrany
 
 #pragma once

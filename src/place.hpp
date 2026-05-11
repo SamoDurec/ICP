@@ -30,5 +30,5 @@ private:
     QString m_id;
     int     m_initialTokens;
     int     m_tokens;
-    QPointF m_pos;
+    QPointF m_pos {0, 0};
 };

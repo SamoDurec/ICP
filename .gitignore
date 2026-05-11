@@ -3,6 +3,9 @@
 *.app
 Makefile
 .qmake.stash
+moc_*.cpp
+moc_*.h
+moc_*.o
 
 # macOS
 .DS_Store

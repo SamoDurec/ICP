@@ -1,4 +1,4 @@
-// Autori: xdurec00, x
+// Autori: xdurecs00, xpertod00
 // Hlavny vstupny bod
 
 #include <QApplication>

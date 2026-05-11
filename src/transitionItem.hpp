@@ -1,4 +1,4 @@
-// Autori: xdurec00, xpertod00
+// Autori: xdurecs00, xpertod00
 // graficka reprezentacia prechodu
 
 #pragma once
@@ -12,6 +12,9 @@ class TransitionItem : public QGraphicsRectItem {
 public:
     static constexpr qreal W = 60.0;
     static constexpr qreal H = 30.0;
+
+    enum class State { Normal, Enabled, PendingTimer };
+    void setState(State s) { m_state = s; update(); }
 
     explicit TransitionItem(std::shared_ptr<Transition> transition,
                             QGraphicsItem *parent = nullptr);
@@ -38,4 +41,5 @@ protected:
 private:
     std::shared_ptr<Transition> m_transition;
     QVector<ArcItem*> m_arcs;
+    State m_state {State::Normal};
 };

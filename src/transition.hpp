@@ -1,4 +1,4 @@
-// Autori: xdurecs00, x
+// Autori: xdurecs00, xpertod00
 // transition v Petriho sieti
 
 #pragma once
@@ -50,5 +50,5 @@ private:
     QString      m_action;
     QVector<Arc> m_inputArcs;
     QVector<Arc> m_outputArcs;
-    QPointF      m_pos;
+    QPointF      m_pos {0, 0};
 };

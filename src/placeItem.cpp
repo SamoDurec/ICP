@@ -1,4 +1,4 @@
-// Autori: xdurec00, xpertod00
+// Autori: xdurecs00, xpertod00
 // graficka reprezentacia miesta
 
 #include "placeItem.hpp"
@@ -58,11 +58,12 @@ void PlaceItem::addArc(ArcItem *arc)
 
 QVariant PlaceItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    if (change == ItemPositionHasChanged)
-    {
-        for(ArcItem *arc : m_arcs)
-        {
-            if (arc) arc->updateGeometry();
+    if (change == ItemPositionHasChanged) {
+        m_place->setPos(value.toPointF());
+        for(ArcItem *arc : m_arcs) {
+            if (arc) {
+                arc->updateGeometry();
+            }
         }
     }
 
