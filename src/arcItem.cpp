@@ -1,5 +1,8 @@
-// Autori: xdurecs00, xpertod00
-// graficka reprezentacia hrany
+/**
+ * @file arcItem.cpp
+ * @authors xdurecs00, xpertod00
+ * @brief Implementacia grafickej reprezentacie hrany.
+ */
 
 #include "arcItem.hpp"
 #include <QPainter>

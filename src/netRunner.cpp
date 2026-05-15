@@ -1,5 +1,8 @@
-// Autori: xdurecs00, xpertod00
-// Implementacia NetRunner
+/**
+ * @file netRunner.cpp
+ * @authors xdurecs00, xpertod00
+ * @brief Implementacia grafickej reprezentacie spustenia siete.
+ */
 
 #include "netRunner.hpp"
 #include <QDateTime>

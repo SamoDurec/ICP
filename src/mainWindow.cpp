@@ -1,5 +1,8 @@
-// Autori: xdurecs00, xpertod00
-// implementacia hlavneho okna
+/**
+ * @file mainWindow.cpp
+ * @authors xdurecs00, xpertod00
+ * @brief Implementacia grafickej reprezentacie hlavneho okna.
+ */
 
 #include "mainWindow.hpp"
 #include "placeItem.hpp"

@@ -1,5 +1,8 @@
-// Autori: xdurecs00, xpertod00
-// graficka reprezentacia prechodu
+/**
+ * @file transitionItem.cpp
+ * @authors xdurecs00, xpertod00
+ * @brief Implementacia grafickej reprezentacie prechodu.
+ */
 
 #include "transitionItem.hpp"
 #include "arcItem.hpp"

@@ -1,5 +1,8 @@
-// Autori: xdurecs00, xpertod00
-// Implementacia transition
+/**
+ * @file transition.cpp
+ * @authors xdurecs00, xpertod00
+ * @brief Implementacia grafickej reprezentacie prechodu.
+ */
 
 #include "transition.hpp"
 

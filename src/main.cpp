@@ -1,5 +1,8 @@
-// Autori: xdurecs00, xpertod00
-// Hlavny vstupny bod
+/**
+ * @file main.cpp
+ * @authors xdurecs00, xpertod00
+ * @brief Vstupny bod aplikacie
+ */
 
 #include <QApplication>
 #include "mainWindow.hpp"

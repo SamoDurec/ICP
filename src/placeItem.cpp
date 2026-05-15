@@ -1,5 +1,8 @@
-// Autori: xdurecs00, xpertod00
-// graficka reprezentacia miesta
+/**
+ * @file placeItem.cpp
+ * @authors xdurecs00, xpertod00
+ * @brief Implementacia grafickej reprezentacie miesta.
+ */
 
 #include "placeItem.hpp"
 #include "arcItem.hpp"

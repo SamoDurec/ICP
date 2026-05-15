@@ -1,5 +1,8 @@
-// Autori: xdurecs00, xpertod00
-// Implementacia petrinet
+/**
+ * @file petrinet.cpp
+ * @authors xdurecs00, xpertod00
+ * @brief Implementacia petrinet.
+ */
 
 #include "petrinet.hpp"
 #include <algorithm>

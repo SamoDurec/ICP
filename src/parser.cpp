@@ -1,5 +1,8 @@
-// Autori: xdurecs00, xpertod00
-// implementacia Parsera pre .pn subory
+/**
+ * @file parser.cpp
+ * @authors xdurecs00, xpertod00
+ * @brief Implementacia parsera pre .pn subory.
+ */
 
 #include "parser.hpp"
 #include <QFile>
