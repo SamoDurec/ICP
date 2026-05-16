@@ -12,6 +12,9 @@
 
 /**
  * @brief Vytvorenie grafickej reprezentácie miesta.
+ * 
+ * @param place Objekt reprezentujúci súvisiaci miesto.
+ * @param parent Rodičovský objekt.
  */
 PlaceItem::PlaceItem(std::shared_ptr<Place> place, QGraphicsItem *parent)
     : QGraphicsEllipseItem(-R, -R, 2*R, 2*R, parent)

@@ -27,6 +27,11 @@
 #include <QEvent>
 #include <QMouseEvent>
 
+/**
+ * @brief Hlavná metoda zaisťujúce vykreslenie scény.
+ * 
+ * Vykreslí do okna všetky položky, ako menu a inject panel a načíta sieť definovanú v súbore examples/test.pn.
+ */
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -97,6 +102,9 @@ MainWindow::MainWindow(QWidget *parent)
     loadNet("examples/test.pn");
 }
 
+/**
+ * @brief Otvorí a načíta Petriho sieť z vybraného súboru.
+ */
 void MainWindow::onOpen()
 {
     QString path = QFileDialog::getOpenFileName(
@@ -104,32 +112,38 @@ void MainWindow::onOpen()
     if (!path.isEmpty()) loadNet(path);
 }
 
+/**
+ * @brief Uloží Petriho sieť, ktorá je aktuálne na obrazovke do vybraného alebo nového súboru.
+ */
 void MainWindow::onSave()
 {
-    // nalezeni suboru
+    // nájdenie súboru
     QString path = QFileDialog::getSaveFileName(
         this, "Save Petri Net", "", "Petri Net (*.pn);;All files (*)");
     
     if (path.isEmpty()) return;
 
-    QFile file(path); // nastaveni cesty
+    QFile file(path); // nastavenie cesty
 
-    // otevrenin suboru
+    // otvorenie súboru
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         qDebug() << "Cannot open file";
         return;
     }
 
-    // Zapis do suboru
+    // zapis do suboru
     QTextStream out(&file);
 
+    // meno
     out << QString::fromUtf8("Jméno sítě:\n");
     out << "\t" << m_net->name() << "\n";    
 
+    // komentar
     out << QString::fromUtf8("Komentář:\n");
     out << "\t" << m_net->comment() << "\n";
 
+    // vstupy
     out << QString::fromUtf8("Vstupy:\n");
     for (const auto &i : m_net->inputs())
     {
@@ -138,6 +152,7 @@ void MainWindow::onSave()
             << "\n";
     }
 
+    // vystupy
     out << QString::fromUtf8("Výstupy:\n");
     for (const auto &o : m_net->outputs())
     {
@@ -146,6 +161,7 @@ void MainWindow::onSave()
             << "\n";
     }
 
+    // premenne
     out << QString::fromUtf8("Proměnné:\n");
     for (const auto &v : m_net->variables())
     {
@@ -154,6 +170,7 @@ void MainWindow::onSave()
             << "\n";
     }
 
+    // miesta
     out << QString::fromUtf8("Místa:\n");
     for (const auto &p : m_net->places())
     {
@@ -166,6 +183,7 @@ void MainWindow::onSave()
             << "\n";
     }
 
+    // prechody
     out << QString::fromUtf8("Přechody:\n");
     for (const auto &t : m_net->transitions())
     {
@@ -207,10 +225,10 @@ void MainWindow::onSave()
         
     }
 
-    // zavreni suboru
+    // zatvorenie suboru
     file.close();
 
-    qDebug() << "Saved to: " << path;
+    qDebug() << "Saved to: " << path; // log
 
 }
 
@@ -232,6 +250,9 @@ void MainWindow::onStop()
     if (m_runner) m_runner->stop();
 }
 
+/**
+ * @brief Vloženie miesta.
+ */
 void MainWindow::onAddPlace()
 {
     auto p = m_net->addPlace("UNNAMED", 0);
@@ -240,10 +261,14 @@ void MainWindow::onAddPlace()
     buildScene();
 }
 
+/**
+ * @brief Zmazanie zakliknutého miesta.
+ */
 void MainWindow::onDeletePlace()
 {
     auto selected = m_scene->selectedItems();
 
+    // prechádza všetky položky, kým nenájde zakliknutú
     for(auto *item : selected)
     {
         auto *placeItem = dynamic_cast<PlaceItem*>(item);
@@ -252,12 +277,15 @@ void MainWindow::onDeletePlace()
 
         QString id = placeItem->place()->id();
 
-        m_net->removePlace(id);
+        m_net->removePlace(id); // odstránenie položky
     }
 
     buildScene();
 }
 
+/**
+ * @brief Vloženie prechodu.
+ */
 void MainWindow::onAddTransition()
 {
     auto t = m_net->addTransition("Unnamed");
@@ -266,10 +294,14 @@ void MainWindow::onAddTransition()
     buildScene();
 }
 
+/**
+ * @brief Zmazanie zakliknutého prechodu.
+ */
 void MainWindow::onDeleteTransition()
 {
     auto selected = m_scene->selectedItems();
 
+    // prechádza všetky položky, kým nenajde zakliknutú
     for (auto *item : selected)
     {
         auto *tItem = dynamic_cast<TransitionItem*>(item);
@@ -278,30 +310,35 @@ void MainWindow::onDeleteTransition()
 
         QString id = tItem->transition()->id();
 
-        m_net->removeTransition(id);
+        m_net->removeTransition(id); // odstranenie prechodu
     }
 
     buildScene();
 }
 
-// aktivuje pridani hrany
+/**
+ * @brief Aktivuje mód pridanie hrany.
+ */
 void MainWindow::onAddArc()
 {
     m_addArcMode = true;
     m_arcStart = nullptr;
 
     m_log->appendPlainText("Click source and target");
-
 }
 
-
-
+/**
+ * @brief Zaisťuje pridanie hrany.
+ * 
+ * Prebehne len ak je m_addArcMode true.
+ */
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
     if (!m_addArcMode) return false;
     if (obj != m_view->viewport()) return false;
     if (event->type() != QEvent::MouseButtonPress) return false;
 
+    // uloženie pozícií zakliknutých objektov
     auto *me = static_cast<QMouseEvent*>(event);
     QPointF scenePos = m_view->mapToScene(me->pos());
     QGraphicsItem *clicked = m_scene->itemAt(scenePos, QTransform());
@@ -317,13 +354,16 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         return true;
     }
 
+    // ak bol zakliknutý dvakrát rovnaký objekt skonči
     if (clicked == m_arcStart) return true;
 
+    // rozlíšenie typov objektov
     auto *p1 = dynamic_cast<PlaceItem*>(m_arcStart);
     auto *t1 = dynamic_cast<TransitionItem*>(m_arcStart);
     auto *p2 = dynamic_cast<PlaceItem*>(clicked);
     auto *t2 = dynamic_cast<TransitionItem*>(clicked);
 
+    // kontrola pozície hrany a vykreslenia
     if (p1 && t2) {
         Arc a; a.placeId = p1->place()->id(); a.weight = 1;
         t2->transition()->addInputArc(a);
@@ -342,15 +382,9 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
     return true;
 }
 
-
-
-
-// zaznamena kliknuti na objekty a prida hranu
-void MainWindow::onSceneSelectionChanged()
-{
-    
-}
-
+/**
+ * @brief Zmazanie zakliknuté hrany.
+ */
 void MainWindow::onDeleteArc()
 {
     auto selected = m_scene->selectedItems();
@@ -359,20 +393,24 @@ void MainWindow::onDeleteArc()
 
     auto *arcItem = dynamic_cast<ArcItem*>(selected.first());
 
+    // log
     if(!arcItem)
     {
         m_log->appendPlainText("Select arc");
         return;
     }
 
+    // uloženie začiatku a konca hrany
     auto *from = arcItem->fromItem();
     auto *to = arcItem->toItem();
 
+    // rozlíšenie typov objektov
     auto *p1 = dynamic_cast<PlaceItem*>(from);
     auto *t1 = dynamic_cast<TransitionItem*>(from);
     auto *p2 = dynamic_cast<PlaceItem*>(to);
     auto *t2 = dynamic_cast<TransitionItem*>(to);
 
+    // zmazanie hrany z prechodu
     if (p1 && t2) { // place -> transition
         QString pid = p1->place()->id();
         QVector<Arc> arcs;

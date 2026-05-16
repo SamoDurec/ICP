@@ -104,8 +104,6 @@ private slots:
     void onDeletePlace();
     /** @brief Prida novy prechod. */
     void onAddTransition();
-    /** @brief Zaznamenava zmeny selekcie (nepouziva sa). */
-    void onSceneSelectionChanged();
     /** @brief Odstrani vybrany prechod. */
     void onDeleteTransition();
     /** @brief Aktivuje rezim pridavania hrany. */

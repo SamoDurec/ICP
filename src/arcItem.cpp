@@ -8,6 +8,14 @@
 #include <QPainter>
 #include <QtMath>
 
+/**
+ * @brief Vytvára grafickú reprezentáciu hrany.
+ * 
+ * @param from Objekt, z ktorého hrana vychádza.
+ * @param to Objekt, do ktorého hrana smeruje.
+ * @param weight Váha hrany.
+ * @param parent Rodičovský objekt.
+ */
 ArcItem::ArcItem(QGraphicsItem *from, QGraphicsItem *to,
                  int weight, QGraphicsItem *parent)
     : QGraphicsLineItem(parent)
