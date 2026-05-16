@@ -1,7 +1,7 @@
 # Nástroj na vizuálnu editáciu, generovanie kódu a monitorovanie behu interpretovaných Petriho sietí
 
 ## Autori
-Samuel Durec (xdurec00)
+Samuel Durec (xdurecs00)
 
 Daniela Pertová (xpertod00)
 
