@@ -10,20 +10,34 @@
 #include <QInputDialog>
 #include <QGraphicsSceneMouseEvent>
 
+/**
+ * @brief Vytvorenie grafickej reprezentácie miesta.
+ */
 PlaceItem::PlaceItem(std::shared_ptr<Place> place, QGraphicsItem *parent)
     : QGraphicsEllipseItem(-R, -R, 2*R, 2*R, parent)
     , m_place(place)
 {
+    // nastavenie flags
     setFlag(QGraphicsItem::ItemIsMovable);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges);
     setFlag(QGraphicsItem::ItemIsSelectable);
     setPen(QPen(Qt::black, 2));
 }
 
+/**
+ * @brief Prekreslenie miesta pri zmene.
+ */
 void PlaceItem::refresh() {
     update();
 }
 
+/**
+ * @brief Hlavná vykresľovacia metóda miesta.
+ * 
+ * Vykreslí obrys, názov a počet tokenov (ak je väčší ako 1).
+ * Vybrané miesto je zafarbené sivo.
+ * Sfarbenie miesta sa mení podľa počtu tokenov.
+ */
 void PlaceItem::paint(QPainter *painter,
                       const QStyleOptionGraphicsItem *option,
                       QWidget *widget)
@@ -35,17 +49,17 @@ void PlaceItem::paint(QPainter *painter,
     painter->setBrush(bg);
     painter->setPen(QPen(Qt::black, 2));
 
-    // obrys na zakliknutem miste
+    // obrys na zakliknutom mieste
     if (isSelected()) painter->setPen(QPen(Qt::gray, 3));
 
-    painter->drawEllipse(boundingRect());
+    painter->drawEllipse(boundingRect()); // vykreslenie obrysu
 
-    // meno miesta
+    // vykreslenie názvu miesta
     painter->setFont(QFont("Arial", 9, QFont::Bold));
     painter->drawText(boundingRect().adjusted(0, -10, 0, -10),
                       Qt::AlignCenter, m_place->id());
 
-    // pocet tokenov
+    // vykreslenie počtu tokenov
     if (m_place->tokens() > 0) {
         painter->setFont(QFont("Arial", 11, QFont::Bold));
         painter->drawText(boundingRect().adjusted(0, 6, 0, 6),
@@ -54,18 +68,27 @@ void PlaceItem::paint(QPainter *painter,
     }
 }
 
+/**
+ * @brief Zaisťuje pridanie nových hrán.
+ */
 void PlaceItem::addArc(ArcItem *arc)
 {
     m_arcs.append(arc);
 }
 
+/**
+ * @brief Hlavná metóda zaisťujúca vykresľovanie miest a hrán pri zmene pozície miesta.
+ */
 QVariant PlaceItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == ItemPositionHasChanged) {
+
         m_place->setPos(value.toPointF());
+
+        // nájde všetky pripojené hrany
         for(ArcItem *arc : m_arcs) {
             if (arc) {
-                arc->updateGeometry();
+                arc->updateGeometry(); // prekreslenie hrán
             }
         }
     }
@@ -73,6 +96,11 @@ QVariant PlaceItem::itemChange(GraphicsItemChange change, const QVariant &value)
     return QGraphicsEllipseItem::itemChange(change, value);
 }
 
+
+/**
+ * @brief Zaisťuje editáciu parametrov miesta.
+ * Spustenie dvojklikom na miesto.
+ */
 void PlaceItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     Q_UNUSED(event);
@@ -103,6 +131,7 @@ void PlaceItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 
     if (!ok) return;
     
+    // aktualizácia parametrov
     m_place->setId(newId);
     m_place->setTokens(tokens);
     update();

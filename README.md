@@ -2,6 +2,7 @@
 
 ## Autori
 Samuel Durec (xdurec00)
+
 Daniela Pertová (xpertod00)
 
 ## Popis nástroja
@@ -71,6 +72,7 @@ Projekt vyžaduje:
 
 ## Známe obmedzenia
 tu sa doplnia dve alebo tri veci, ktoré napríklad nie sú úplne dotiahnuté alebo podobne
+- nelze editovat váhu hrany
 
 ## Implementačné poznámky
 Grafická časť editora je implementovaná pomocou Qt Graphics View frameworku.

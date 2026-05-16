@@ -15,42 +15,45 @@ ArcItem::ArcItem(QGraphicsItem *from, QGraphicsItem *to,
     , m_to(to)
     , m_weight(weight)
 {
-    setFlag(QGraphicsItem::ItemIsSelectable);
+    setFlag(QGraphicsItem::ItemIsSelectable); // umožňuje zakliknúť hranu
     setZValue(-1); // kreslí sa pod miestami a prechodmi
     setPen(QPen(Qt::white, 1.5));
     updateGeometry();
 }
 
+/**
+ * @brief Zaisťuje vykreslenie, prípadne prekreslenie hrany.
+ */
 void ArcItem::updateGeometry()
 {
-    // najde stred objektu
+    // nájde stred objektu
     QPointF srcCenter = m_from->mapToScene(m_from->boundingRect().center());
     QPointF dstCenter = m_to->mapToScene(m_to->boundingRect().center());
 
-    // spojnice stredu
+    // spojnica stredov objektov
     QLineF centerLine(srcCenter, dstCenter);
 
-    // nevykresluj, pokud je hrana prilis kratka
+    // nevykresľuj, pokiaľ je hrana príliš krátka
     if (centerLine.length() < 1.0) return;
 
-    // posunuti koncu car
+    // posunutie koncov čiar na kraj objektov
     QPointF src = edgePoint(m_from, dstCenter);
     QPointF dst = edgePoint(m_to, srcCenter);
 
-    setLine(QLineF(src, dst));
+    setLine(QLineF(src, dst)); // vytvorí geometriu úsečky medzi bodmi
 }
 
+/**
+ * @brief Hľadá okraj objektu, kde sa má zakončiť hrana.
+ */
 QPointF ArcItem::edgePoint(QGraphicsItem *item, const QPointF &to)
 {
-    // slouzi k nalezeni okraju mist a přechodu, aby se spravne vykreslovaly hrany
-    // hleda okraj pro obdelnik, coz by melo fungovat i pro kruh
-    QRectF rect = item->sceneBoundingRect();
+    // hľadá okraj pre obdĺžnik ohraničujúci objekt v scéne
+    QRectF rect = item->sceneBoundingRect(); // nájde obdlžník
+    QPointF center = rect.center(); // vypočíta stred objektu
+    QLineF line(center, to); // smer hrany
 
-    QPointF center = rect.center();
-
-    QLineF line(center, to);
-
-    // nastaveni hran
+    // vytvorenie hrán objektu
     QList<QLineF> edges = {
         QLineF(rect.topLeft(), rect.topRight()),
         QLineF(rect.topRight(), rect.bottomRight()),
@@ -60,6 +63,7 @@ QPointF ArcItem::edgePoint(QGraphicsItem *item, const QPointF &to)
 
     QPointF intersection;
 
+    // hľadanie priesečníka okraja objektu a hrany
     for (const QLineF &edge : edges)
     {
         auto type = line.intersects(edge, &intersection);
@@ -70,25 +74,36 @@ QPointF ArcItem::edgePoint(QGraphicsItem *item, const QPointF &to)
     return center;
 }
 
+/**
+ * @brief Vracia oblasť, ktorú objekt zaberá pri vykresľovaní.
+ */
 QRectF ArcItem::boundingRect() const
 {
     return QGraphicsLineItem::boundingRect().adjusted(-20, -20, 20, 20);
 }
-
+/**
+ * @brief Hlavná vykresľovacia metóda hrany.
+ * 
+ * Vykresluje čáru, šipku i váhu.
+ * Označená hrana je označená šedou farbou.
+ * Váha 1 sa nevykresľuje.
+ */
 void ArcItem::paint(QPainter *painter,
                     const QStyleOptionGraphicsItem *option,
                     QWidget *widget)
 {
     Q_UNUSED(option) Q_UNUSED(widget)
 
-    QLineF l = line();
-    if (l.length() < 1.0) return;
+    QLineF l = line(); // načíta aktuálnu geometriu hrany
+    if (l.length() < 1.0) return; // kontrola dĺžky
 
-    if (isSelected()) painter->setPen(QPen(Qt::gray, 1.5));
+    // nastavuje farbu
+    if (isSelected()) painter->setPen(QPen(Qt::gray, 1.5)); // vybraná hrana
     else painter->setPen(QPen(Qt::black, 1.5));
-    painter->drawLine(l);
 
-    // sipka na konci
+    painter->drawLine(l); // vykreslenie čiary
+
+    // vykreslenie šípky na konci
     const double angle = std::atan2(-l.dy(), l.dx());
     const double sz = 10.0;
     QPointF tip = l.p2();
@@ -96,9 +111,10 @@ void ArcItem::paint(QPainter *painter,
                                -std::sin(angle + M_PI*5/6) * sz);
     QPointF p2 = tip + QPointF(std::cos(angle - M_PI*5/6) * sz,
                                -std::sin(angle - M_PI*5/6) * sz);
-    painter->setBrush(Qt::white);
+    painter->setBrush(Qt::white); // biela výplň
     painter->drawPolygon(QPolygonF({tip, p1, p2}));
 
+    // zobrazenie váhy hrany (ak je väčšia ako 1)
     if (m_weight > 1) {
         QPointF mid = (l.p1() + l.p2()) / 2.0;
         painter->setPen(Qt::yellow);
