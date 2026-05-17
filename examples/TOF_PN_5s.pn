@@ -1,0 +1,35 @@
+Jméno sítě:
+    TOF_PN_5s
+Komentář:
+    Timer to off - jednoducha verzia. Vstup in=1 zapne vystup, in=0 spusti 5s timer, po ktorom sa vypne.
+Vstupy:
+    in
+Výstupy:
+    out
+Proměnné:
+    int timeout = 5000
+Místa:
+    IDLE (1)
+    ACTIVE (0)
+    TIMING (0)
+Přechody:
+T_on :
+    in:  IDLE*1
+    out: ACTIVE*1
+    when: in [ atoi(valueof("in")) == 1 ]
+    do: { }
+T_off_start :
+    in:  ACTIVE*1
+    out: TIMING*1
+    when: in [ atoi(valueof("in")) == 0 ]
+    do: { }
+T_cancel_off :
+    in:  TIMING*1
+    out: ACTIVE*1
+    when: in [ atoi(valueof("in")) == 1 ]
+    do: { }
+T_timeout_off :
+    in:  TIMING*1
+    out: IDLE*1
+    when:  @ 5000
+    do: { }

@@ -63,6 +63,10 @@ private:
     void scheduleDelayed();
     /** @brief Zapise spravu do logu. */
     void log(const QString &msg);
+    /** @brief Vyhodnotí strážnu podmienku prechodu. @return true ak podmienka platí. */
+    bool evaluateGuard(const QString &guard) const;
+    /** @brief Vráti poslednú známu hodnotu vstupu. */
+    QString valueof(const QString &name) const;
 
     std::shared_ptr<PetriNet>    m_net;           ///< Spustana siet
     bool                         m_running {false}; ///< Stav behu

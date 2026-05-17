@@ -20,7 +20,7 @@ clean-doxy:
 	rm -rf doc/latex
 
 pack: clean clean-doxy
-	zip -r xdurec00-xpertod00.zip \
+	zip -r xdurecs00-xpertod00.zip \
 		src \
 		examples \
 		doc \

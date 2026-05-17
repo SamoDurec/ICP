@@ -1,25 +1,24 @@
 Jméno sítě:
-    TOF_PN_5s
+    TokenTest
 Komentář:
-    Timer to off, jednoducha verzia
+    Test tokens() v garde
 Vstupy:
     in
 Výstupy:
     out
 Proměnné:
-    int timeout = 5000
+    int x = 0
 Místa:
     IDLE (1)
     ACTIVE (0)
-    TIMING (0)
 Přechody:
 T_on :
     in:  IDLE*1
     out: ACTIVE*1
-    when: in [ ]
+    when: in [ defined("in") ]
     do: { }
 T_off :
-    in: ACTIVE*0
-    out: 
-    when: in [ ]
+    in:  ACTIVE*1
+    out: IDLE*1
+    when: in [ atoi(valueof("in")) == 0 ]
     do: { }
