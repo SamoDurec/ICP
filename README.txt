@@ -51,9 +51,8 @@ Dokumentacia generovana nastrojom Doxygen:
 Vygenerovana dokumentacia bude dostupna v:
     doc/html/index.html
 
-Konceptualny navrh (diagram tried a sekvencny diagram) je v suboroch:
-    doc/class_diagram.pdf
-    doc/sequence_diagram.pdf
+Konceptualny navrh (diagram tried a sekvencny diagram) je v subore:
+    doc/diagrams.pdf
 
 Dalsie prikazy
 --------------
