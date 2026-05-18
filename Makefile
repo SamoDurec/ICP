@@ -24,5 +24,5 @@ pack: clean clean-doxy
 		src \
 		examples \
 		doc \
-		README.md \
+		README.txt \
 		Makefile

@@ -114,3 +114,4 @@ Interpretacia Petriho siete je realizovana triedou NetRunner, ktora implementuje
 
 Hrany su reprezentovane triedou ArcItem, ktora automaticky aktualizuje
 svoju geometriu pri pohybe prepojenych objektov.
+Na návrh štruktúry, dovysvetlenie drobných častí zadania a pomoc s používaním QT sme použili AI model Claude.
