@@ -11,13 +11,9 @@
 #include <QGraphicsSceneMouseEvent>
 
 /**
- * @brief Vytvorenie grafickej reprezentácie miesta.
- * 
- * @param transition Objekt reprezentujúci súvisiaci prechod.
- * @param parent Rodičovský objekt.
+ * @brief Vytvorenie grafickej reprezentacie prechodu.
  */
-TransitionItem::TransitionItem(std::shared_ptr<Transition> transition,
-                               QGraphicsItem *parent)
+TransitionItem::TransitionItem(std::shared_ptr<Transition> transition, QGraphicsItem *parent)
     : QGraphicsRectItem(-W/2, -H/2, W, H, parent)
     , m_transition(transition)
 {
@@ -35,19 +31,15 @@ void TransitionItem::refresh() {
 }
 
 /**
- * @brief Hlavná vykresľovacia metóda prechodu.
- * 
- * Vykreslí obdĺžnik značiaci prechod a jeho názov.
- * Zmení farbu pri zakliknutí.
- * Mení farbu pri enabled.
+ * @brief Hlavna vykreslovacia metoda prechodu.
+ * Vykresli obdlznik znamenajuci prechod a jeho nazov.
+ * Zmeni farbu pri zakliknuti.
+ * Meni farbu pri enabled.
  */
-void TransitionItem::paint(QPainter *painter,
-                           const QStyleOptionGraphicsItem *option,
-                           QWidget *widget)
-{
+void TransitionItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option) Q_UNUSED(widget)
 
-    // nastavenie farby podľa stavu
+    // nastavenie farby podla stavu
     QColor bg;
     switch (m_state) {
         case State::Enabled:      bg = QColor(255, 255, 160); break; // zlta
@@ -60,37 +52,36 @@ void TransitionItem::paint(QPainter *painter,
     painter->setPen(QPen(Qt::black, 2));
 
     // nastavenie farby obrysov pri zakliknutí
-    if (isSelected()) painter->setPen(QPen(Qt::gray, 3));
+    if (isSelected()) {
+        painter->setPen(QPen(Qt::gray, 3));
+    }
 
-    // vykreslenie obdĺžnika
+    // vykreslenie obdlznika
     painter->drawRect(boundingRect());
 
-    // vykreslenie názvu
+    // vykreslenie nazvu
     painter->setFont(QFont("Arial", 9, QFont::Bold));
     painter->drawText(boundingRect(), Qt::AlignCenter, m_transition->id());
 }
 
 /**
- * @brief Zaisťuje pridanie nových hrán.
+ * @brief Zaistuje pridanie novych hran.
  */
-void TransitionItem::addArc(ArcItem *arc)
-{
+void TransitionItem::addArc(ArcItem *arc) {
     m_arcs.append(arc);
 }
 
 /**
- * @brief Hlavná metóda zaisťujúca vykresľovanie prechodov a hrán pri zmene pozície prechodu.
+ * @brief Hlavna metoda zaistujuca vykreslovanie prechodov a hran pri zmene pozicie prechodu.
  */
-QVariant TransitionItem::itemChange(GraphicsItemChange change, const QVariant &value)
-{
+QVariant TransitionItem::itemChange(GraphicsItemChange change, const QVariant &value) {
     if (change == ItemPositionHasChanged) {
-
         m_transition->setPos(value.toPointF());
 
-        // nájde všetky pripojené hrany
+        // najde vsetky pripojene hrany
         for(ArcItem *arc : m_arcs) {
             if (arc) {
-                arc->updateGeometry(); // prekreslenie hrán
+                arc->updateGeometry(); // prekreslenie hran
             }
         }
     }
@@ -99,11 +90,10 @@ QVariant TransitionItem::itemChange(GraphicsItemChange change, const QVariant &v
 }
 
 /**
- * @brief Zaisťuje editáciu parametrov prechodu.
+ * @brief Zaistuje editaciu parametrov prechodu.
  * Spustenie dvojklikom na prechod.
  */
-void TransitionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
+void TransitionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
     Q_UNUSED(event);
 
     bool ok;
@@ -117,7 +107,9 @@ void TransitionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         m_transition->id(),
         &ok);
     
-    if(!ok) return;
+    if(!ok) {
+        return;
+    }
 
     // event
     QString eventName = QInputDialog::getText(
@@ -139,7 +131,9 @@ void TransitionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         m_transition->guard(),
         &ok);
 
-    if (!ok) return;
+    if (!ok) {
+        return;
+    }
 
     // delay
     int delay = QInputDialog::getInt(
@@ -152,7 +146,9 @@ void TransitionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         1,
         &ok);
 
-    if (!ok) return;
+    if (!ok) {
+        return;
+    }
 
     // action
     QString action = QInputDialog::getText(
@@ -163,8 +159,10 @@ void TransitionItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         m_transition->action(),
         &ok);
 
-    if (!ok) return;
-    
+    if (!ok) {
+        return;
+    }
+
     // aktualizácia parametrov
     m_transition->setId(newId);
     m_transition->setEventName(eventName);

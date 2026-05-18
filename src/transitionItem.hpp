@@ -12,7 +12,7 @@
 class ArcItem;
 
 /**
- * @brief Graficka reprezentacia prechodu — kreslí sa ako obdlznik.
+ * @brief Graficka reprezentacia prechodu — kresli sa ako obdlznik.
  *
  * Farba sa meni podla stavu: biela=normal, zlta=enabled, modra=timer.
  * Dvojklik otvori dialog pre editaciu.
@@ -25,7 +25,7 @@ public:
     /** @brief Stav prechodu pre farebne zvyraznenie. */
     enum class State { Normal, Enabled, PendingTimer };
 
-    /** @brief Nastavi stav a prekreslí. */
+    /** @brief Nastavi stav a prekresli. */
     void setState(State s) { m_state = s; update(); }
 
     /**
@@ -36,7 +36,7 @@ public:
     explicit TransitionItem(std::shared_ptr<Transition> transition,
                             QGraphicsItem *parent = nullptr);
 
-    /** @brief Prekreslí obdlznik. */
+    /** @brief Prekresli obdlznik. */
     void refresh();
     /** @brief Prida hranu pre aktualizaciu pri pohybe. */
     void addArc(ArcItem *arc);

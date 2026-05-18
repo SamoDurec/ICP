@@ -9,7 +9,6 @@
 
 /**
  * @brief Graficka hrana medzi miestom a prechodom.
- *
  * Kreslí sa ako ciara so sipkou na konci. Aktualizuje sa pri pohybe prvkov.
  */
 class ArcItem : public QGraphicsLineItem {

@@ -28,9 +28,8 @@
 #include <QMouseEvent>
 
 /**
- * @brief Hlavná metoda zaisťujúce vykreslenie scény.
- * 
- * Vykreslí do okna všetky položky, ako menu a inject panel a načíta sieť definovanú v súbore examples/test.pn.
+ * @brief Hlavna metoda zaistujuca vykreslenie sceny.
+ * Vykresli do okna vsetky polozky, a nacita siet definovanu v subore examples/test.pn.
  */
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -103,31 +102,32 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 /**
- * @brief Otvorí a načíta Petriho sieť z vybraného súboru.
+ * @brief Otvori a nacita Petriho siet z vybraneho suboru.
  */
-void MainWindow::onOpen()
-{
+void MainWindow::onOpen() {
     QString path = QFileDialog::getOpenFileName(
         this, "Open Petri Net", "", "Petri Net (*.pn);;All files (*)");
-    if (!path.isEmpty()) loadNet(path);
+    if (!path.isEmpty()) {
+        loadNet(path);
+    }
 }
 
 /**
- * @brief Uloží Petriho sieť, ktorá je aktuálne na obrazovke do vybraného alebo nového súboru.
+ * @brief Ulozi Petriho siet, ktora je aktualne na obrazovke do vybraneho alebo noveho súboru.
  */
-void MainWindow::onSave()
-{
-    // nájdenie súboru
+void MainWindow::onSave() {
+    // najdenie suboru
     QString path = QFileDialog::getSaveFileName(
         this, "Save Petri Net", "", "Petri Net (*.pn);;All files (*)");
     
-    if (path.isEmpty()) return;
+    if (path.isEmpty()) {
+        return;
+    }
 
     QFile file(path); // nastavenie cesty
 
     // otvorenie súboru
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qDebug() << "Cannot open file";
         return;
     }
@@ -145,8 +145,7 @@ void MainWindow::onSave()
 
     // vstupy
     out << QString::fromUtf8("Vstupy:\n");
-    for (const auto &i : m_net->inputs())
-    {
+    for (const auto &i : m_net->inputs()) {
         out << "\t"
             << i
             << "\n";
@@ -154,8 +153,7 @@ void MainWindow::onSave()
 
     // vystupy
     out << QString::fromUtf8("Výstupy:\n");
-    for (const auto &o : m_net->outputs())
-    {
+    for (const auto &o : m_net->outputs()) {
         out << "\t"
             << o
             << "\n";
@@ -163,8 +161,7 @@ void MainWindow::onSave()
 
     // premenne
     out << QString::fromUtf8("Proměnné:\n");
-    for (const auto &v : m_net->variables())
-    {
+    for (const auto &v : m_net->variables()) {
         out << "\t"
             << v
             << "\n";
@@ -172,8 +169,7 @@ void MainWindow::onSave()
 
     // miesta
     out << QString::fromUtf8("Místa:\n");
-    for (const auto &p : m_net->places())
-    {
+    for (const auto &p : m_net->places()) {
         out << "\t"
             << p->id()
             << " "
@@ -185,14 +181,12 @@ void MainWindow::onSave()
 
     // prechody
     out << QString::fromUtf8("Přechody:\n");
-    for (const auto &t : m_net->transitions())
-    {
+    for (const auto &t : m_net->transitions()) {
         out << t->id()
             << " :\n";
 
         out << "\tin: ";
-        for (const Arc &a : t->inputArcs())
-        {
+        for (const Arc &a : t->inputArcs()) {
             out << a.placeId
                 << "*"
                 << a.weight
@@ -200,8 +194,7 @@ void MainWindow::onSave()
         }
 
         out << "\n\tout: ";
-        for (const Arc &a : t->outputArcs())
-        {
+        for (const Arc &a : t->outputArcs()) {
             out << a.placeId
                 << "*"
                 << a.weight
@@ -213,8 +206,7 @@ void MainWindow::onSave()
             << " [ "
             << t->guard()
             << " ]";
-        if (t->isDelayed())
-        {
+        if (t->isDelayed()) {
             out << " @ "
                 << t->delayMs();
         }
@@ -232,9 +224,10 @@ void MainWindow::onSave()
 
 }
 
-void MainWindow::onStart()
-{
-    if (!m_net) return;
+void MainWindow::onStart() {
+    if (!m_net) {
+        return;
+    }
     if (!m_runner) {
         m_runner = new NetRunner(m_net, this);
         connect(m_runner, &NetRunner::logMessage,
@@ -245,16 +238,16 @@ void MainWindow::onStart()
     m_runner->start();
 }
 
-void MainWindow::onStop()
-{
-    if (m_runner) m_runner->stop();
+void MainWindow::onStop() {
+    if (m_runner) {
+        m_runner->stop();
+    }
 }
 
 /**
- * @brief Vloženie miesta.
+ * @brief Vlozenie miesta.
  */
-void MainWindow::onAddPlace()
-{
+void MainWindow::onAddPlace() {
     auto p = m_net->addPlace("UNNAMED", 0);
     p->setPos(QPointF(0, 200));
 
@@ -262,29 +255,27 @@ void MainWindow::onAddPlace()
 }
 
 /**
- * @brief Zmazanie zakliknutého miesta.
+ * @brief Zmazanie zakliknuteho miesta.
  */
-void MainWindow::onDeletePlace()
-{
+void MainWindow::onDeletePlace() {
     auto selected = m_scene->selectedItems();
 
-    // prechádza všetky položky, kým nenájde zakliknutú
-    for(auto *item : selected)
-    {
+    // prechadza vsetky polozky, kym nanajde zakliknutu
+    for(auto *item : selected) {
         auto *placeItem = dynamic_cast<PlaceItem*>(item);
 
         if(!placeItem) continue;
 
         QString id = placeItem->place()->id();
 
-        m_net->removePlace(id); // odstránenie položky
+        m_net->removePlace(id);
     }
 
     buildScene();
 }
 
 /**
- * @brief Vloženie prechodu.
+ * @brief Vlozenie prechodu.
  */
 void MainWindow::onAddTransition()
 {
@@ -301,7 +292,7 @@ void MainWindow::onDeleteTransition()
 {
     auto selected = m_scene->selectedItems();
 
-    // prechádza všetky položky, kým nenajde zakliknutú
+    // prechadza vsetky polozky, kým nenájde zakliknutú
     for (auto *item : selected)
     {
         auto *tItem = dynamic_cast<TransitionItem*>(item);
@@ -310,17 +301,16 @@ void MainWindow::onDeleteTransition()
 
         QString id = tItem->transition()->id();
 
-        m_net->removeTransition(id); // odstranenie prechodu
+        m_net->removeTransition(id);
     }
 
     buildScene();
 }
 
 /**
- * @brief Aktivuje mód pridanie hrany.
+ * @brief Aktivuje mod pridanie hrany.
  */
-void MainWindow::onAddArc()
-{
+void MainWindow::onAddArc() {
     m_addArcMode = true;
     m_arcStart = nullptr;
 
@@ -328,25 +318,33 @@ void MainWindow::onAddArc()
 }
 
 /**
- * @brief Zaisťuje pridanie hrany.
- * 
+ * @brief Zaistuje pridanie hrany.
  * Prebehne len ak je m_addArcMode true.
  */
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)
-{
-    if (!m_addArcMode) return false;
-    if (obj != m_view->viewport()) return false;
-    if (event->type() != QEvent::MouseButtonPress) return false;
+bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
+    if (!m_addArcMode) {
+        return false;
+    }
+    if (obj != m_view->viewport()) {
+        return false;
+    }
+    if (event->type() != QEvent::MouseButtonPress) {
+        return false;
+    }
 
-    // uloženie pozícií zakliknutých objektov
+    // ulozenie pozicii zakliknutych objektov
     auto *me = static_cast<QMouseEvent*>(event);
     QPointF scenePos = m_view->mapToScene(me->pos());
     QGraphicsItem *clicked = m_scene->itemAt(scenePos, QTransform());
 
-    if (!clicked) return false;
+    if (!clicked) {
+        return false;
+    }
 
     // ignoruj ArcItem
-    if (dynamic_cast<ArcItem*>(clicked)) return false;
+    if (dynamic_cast<ArcItem*>(clicked)) {
+        return false;
+    }
 
     if (!m_arcStart) {
         m_arcStart = clicked;
@@ -354,16 +352,18 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         return true;
     }
 
-    // ak bol zakliknutý dvakrát rovnaký objekt skonči
-    if (clicked == m_arcStart) return true;
+    // ak bol zakliknuty dvakrat rovnaky objekt skonci
+    if (clicked == m_arcStart) {
+        return true;
+    }
 
-    // rozlíšenie typov objektov
+    // rozlisenie typov objektov
     auto *p1 = dynamic_cast<PlaceItem*>(m_arcStart);
     auto *t1 = dynamic_cast<TransitionItem*>(m_arcStart);
     auto *p2 = dynamic_cast<PlaceItem*>(clicked);
     auto *t2 = dynamic_cast<TransitionItem*>(clicked);
 
-    // kontrola pozície hrany a vykreslenia
+    // kontrola pozicie hrany a vykreslenia
     if (p1 && t2) {
         Arc a; a.placeId = p1->place()->id(); a.weight = 1;
         t2->transition()->addInputArc(a);
@@ -383,28 +383,27 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 }
 
 /**
- * @brief Zmazanie zakliknuté hrany.
+ * @brief Zmazanie zakliknutej hrany.
  */
-void MainWindow::onDeleteArc()
-{
+void MainWindow::onDeleteArc() {
     auto selected = m_scene->selectedItems();
 
-    if(selected.isEmpty()) return;
-
+    if(selected.isEmpty()) {
+        return;
+    }
     auto *arcItem = dynamic_cast<ArcItem*>(selected.first());
 
     // log
-    if(!arcItem)
-    {
+    if(!arcItem) {
         m_log->appendPlainText("Select arc");
         return;
     }
 
-    // uloženie začiatku a konca hrany
+    // ulozenie a zaciatku a konca hrany
     auto *from = arcItem->fromItem();
     auto *to = arcItem->toItem();
 
-    // rozlíšenie typov objektov
+    // rozlisenie typov objektov
     auto *p1 = dynamic_cast<PlaceItem*>(from);
     auto *t1 = dynamic_cast<TransitionItem*>(from);
     auto *p2 = dynamic_cast<PlaceItem*>(to);
@@ -415,9 +414,10 @@ void MainWindow::onDeleteArc()
         QString pid = p1->place()->id();
         QVector<Arc> arcs;
 
-        for (const auto &a : t2->transition()->inputArcs())
-        {
-            if (a.placeId != pid) arcs.append(a);
+        for (const auto &a : t2->transition()->inputArcs()) {
+            if (a.placeId != pid) {
+                arcs.append(a);
+            }
         }
 
         t2->transition()->setInputArcs(arcs);
@@ -425,9 +425,10 @@ void MainWindow::onDeleteArc()
         QString pid = p2->place()->id();
         QVector<Arc> arcs;
 
-        for (const auto &a : t1->transition()->outputArcs())
-        {
-            if (a.placeId != pid) arcs.append(a);
+        for (const auto &a : t1->transition()->outputArcs()) {
+            if (a.placeId != pid) {
+                arcs.append(a);
+            }
         }
 
         t1->transition()->setOutputArcs(arcs);
@@ -436,53 +437,59 @@ void MainWindow::onDeleteArc()
     buildScene();
 }
 
-void MainWindow::onInject()
-{
+void MainWindow::onInject() {
     if (!m_runner || !m_runner->isRunning()) {
         m_log->appendPlainText("! Siet nebezi - najprv stlac Run->Start");
         return;
     }
     QString name  = m_injectName->text().trimmed();
     QString value = m_injectValue->text().trimmed();
-    if (name.isEmpty()) return;
+    if (name.isEmpty()) {
+        return;
+    }
     m_runner->injectInput(name, value);
 }
 
-void MainWindow::onLogMessage(const QString &msg)
-{
+void MainWindow::onLogMessage(const QString &msg) {
     m_log->appendPlainText(msg);
 }
 
-void MainWindow::onMarkingChanged()
-{
+void MainWindow::onMarkingChanged() {
     for (auto *item : m_scene->items()) {
-        if (auto *pi = dynamic_cast<PlaceItem*>(item))
+        if (auto *pi = dynamic_cast<PlaceItem*>(item)) {
             pi->refresh();
+        }
 
         if (auto *ti = dynamic_cast<TransitionItem*>(item)) {
             auto t = ti->transition();
-            if (m_runner && m_runner->isPendingTimer(t->id()))
+            if (m_runner && m_runner->isPendingTimer(t->id())) {
                 ti->setState(TransitionItem::State::PendingTimer);
-            else if (m_net->isEnabled(t))
+            } else if (m_net->isEnabled(t)) {
                 ti->setState(TransitionItem::State::Enabled);
-            else
+            } else {
                 ti->setState(TransitionItem::State::Normal);
+            }
         }
     }
 }
 
-void MainWindow::loadNet(const QString &path)
-{
-    if (m_runner) { m_runner->stop(); delete m_runner; m_runner = nullptr; }
+void MainWindow::loadNet(const QString &path) {
+    if (m_runner) { 
+        m_runner->stop(); 
+        delete m_runner; 
+        m_runner = nullptr; 
+    }
     QString error;
     m_net = Parser::load(path, error);
-    if (!m_net) { QMessageBox::critical(this, "Chyba", error); return; }
+    if (!m_net) { 
+        QMessageBox::critical(this, "Chyba", error); 
+        return; 
+    }
     setWindowTitle("ICP Petri Net — " + m_net->name());
     buildScene();
 }
 
-void MainWindow::buildScene()
-{
+void MainWindow::buildScene() {
     m_scene->blockSignals(true);
     m_scene->clear();
     if (!m_net) {
@@ -494,8 +501,10 @@ void MainWindow::buildScene()
     int x = -200;
     for (auto &place : m_net->places()) {
         auto *item = new PlaceItem(place);
-        if (place->pos() == QPointF(0, 0))
+        if (place->pos() == QPointF(0, 0)) {
             place->setPos(QPointF(x, -80));
+        }
+
         item->setPos(place->pos());
         m_scene->addItem(item);
         items[place->id()] = item;
@@ -505,8 +514,9 @@ void MainWindow::buildScene()
     x = -140;
     for (auto &t : m_net->transitions()) {
         auto *item = new TransitionItem(t);
-        if (t->pos() == QPointF(0, 0))
+        if (t->pos() == QPointF(0, 0)) {
             t->setPos(QPointF(x, 80));
+        }
         item->setPos(t->pos());
         m_scene->addItem(item);
         items[t->id()] = item;
@@ -515,11 +525,12 @@ void MainWindow::buildScene()
 
     for (auto &t : m_net->transitions()) {
         QGraphicsItem *tItem = items[t->id()];
-        if (!tItem) continue;
+        if (!tItem) {
+            continue;
+        }
         for (const auto &arc : t->inputArcs()) {
             QGraphicsItem *pItem = items[arc.placeId];
-            if (pItem)
-            {
+            if (pItem) {
                 ArcItem *line = new ArcItem(pItem, tItem, arc.weight);
 
                 m_scene->addItem(line);
@@ -527,15 +538,18 @@ void MainWindow::buildScene()
                 auto *placeItem = dynamic_cast<PlaceItem*>(pItem);
                 auto *transitionItem = dynamic_cast<TransitionItem*>(tItem);
 
-                if (placeItem) placeItem->addArc(line);
-                if (transitionItem) transitionItem->addArc(line);
+                if (placeItem) {
+                    placeItem->addArc(line);
+                }
+                if (transitionItem) {
+                    transitionItem->addArc(line);
+                }
             }
         }
 
         for (const auto &arc : t->outputArcs()) {
             QGraphicsItem *pItem = items[arc.placeId];
-            if (pItem)
-            {
+            if (pItem) {
                 ArcItem *line = new ArcItem(tItem, pItem, arc.weight);
 
                 m_scene->addItem(line);
@@ -543,8 +557,12 @@ void MainWindow::buildScene()
                 auto *placeItem = dynamic_cast<PlaceItem*>(pItem);
                 auto *transitionItem = dynamic_cast<TransitionItem*>(tItem);
 
-                if (placeItem) placeItem->addArc(line);
-                if (transitionItem) transitionItem->addArc(line);
+                if (placeItem) {
+                    placeItem->addArc(line);
+                }
+                if (transitionItem) {
+                    transitionItem->addArc(line);
+                }
             }
         }
     }

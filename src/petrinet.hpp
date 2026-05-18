@@ -59,7 +59,7 @@ public:
 
     /** @brief Resetuje marking na pociatocne hodnoty. */
     void resetMarking();
-    /** @brief Skontroluje ci je prechod povoleny (dostatok tokenov). */
+    /** @brief Skontroluje ci je prechod povoleny. */
     bool isEnabled(const std::shared_ptr<Transition> &t) const;
 
 private:

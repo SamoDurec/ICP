@@ -18,7 +18,6 @@ class QGraphicsItem;
 
 /**
  * @brief Hlavne okno aplikacie — editor a monitor Petriho siete.
- *
  * Obsahuje graficku scenu, log panel, inject panel a menu.
  */
 class MainWindow : public QMainWindow {

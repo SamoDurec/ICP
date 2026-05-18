@@ -13,8 +13,7 @@
 
 /**
  * @brief Spusta interpretovanu Petriho siet.
- *
- * Implementuje hlavnu slucku: stabilizacia, timery, inject vstupov.
+ * Implementuje hlavnu slucku.
  */
 class NetRunner : public QObject {
     Q_OBJECT
@@ -27,7 +26,7 @@ public:
     explicit NetRunner(std::shared_ptr<PetriNet> net,
                        QObject *parent = nullptr);
 
-    /** @brief Spusti siet (reset markingu, stabilizacia). */
+    /** @brief Spusti siet. */
     void start();
     /** @brief Zastavi siet a zrusi timery. */
     void stop();

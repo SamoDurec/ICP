@@ -6,7 +6,7 @@
 
 #include "place.hpp"
 /**
- * @brief Konštruktor miesta.
+ * @brief Konstruktor miesta.
  */
 Place::Place(const QString &id, int initialTokens)
     : m_id(id)
@@ -15,8 +15,8 @@ Place::Place(const QString &id, int initialTokens)
 {}
 
 /**
- * @brief Odstráni tokeny z miesta, pokiaľ to ide.
- * Pri úspechu vráti true, inak false.
+ * @brief Odstrani tokeny z miesta, pokial to ide.
+ * Pri uspechu vrati true, inak false.
  */
 bool Place::removeTokens(int n) {
     if (m_tokens < n) return false;
@@ -25,8 +25,8 @@ bool Place::removeTokens(int n) {
 }
 
 /**
- * @brief Nastaví nový identifikátor miesta.
- * @param id Nový identifikátor.
+ * @brief Nastavi novy identifikator miesta.
+ * @param id Novy identifikator.
  */
 void Place::setId(const QString &id)
 {
@@ -34,8 +34,8 @@ void Place::setId(const QString &id)
 }
 
 /**
- * @brief Nastaví počet tokenov.
- * Ľubovoľné celé číslo zadané užívateľom.
+ * @brief Nastavi pocet tokenov.
+ * Lubovolne cele cislo zadane uzivatelom.
  */
 void Place::setTokens(int t)
 {

@@ -148,7 +148,7 @@ bool NetRunner::evaluateGuard(const QString &guard) const
 
     QString g = guard.trimmed();
 
-    // nahrad valueof("x") skutocnou hodnotou
+    // nahradi valueof("x") skutocnou hodnotou
     QRegularExpression valRe("valueof\\(\"([^\"]+)\"\\)");
     QRegularExpressionMatchIterator it = valRe.globalMatch(g);
     while (it.hasNext()) {
@@ -168,7 +168,7 @@ bool NetRunner::evaluateGuard(const QString &guard) const
         g.replace(md.captured(0), isDefined ? "1" : "0");
     }
 
-    // atoi("123") -> 123
+    // atoi funkcia na konverziu
     QRegularExpression atoiRe("atoi\\(\"(-?\\d+)\"\\)");
     QRegularExpressionMatch m2;
     while ((m2 = atoiRe.match(g)).hasMatch()) {
@@ -195,12 +195,24 @@ bool NetRunner::evaluateGuard(const QString &guard) const
         QString op = mc.captured(2);
         int right = mc.captured(3).toInt();
 
-        if (op == "==") return left == right;
-        if (op == "!=") return left != right;
-        if (op == ">=") return left >= right;
-        if (op == "<=") return left <= right;
-        if (op == ">")  return left > right;
-        if (op == "<")  return left < right;
+        if (op == "==") {
+            return left == right;
+        }
+        if (op == "!=") {
+            return left != right;
+        }
+        if (op == ">=") {
+            return left >= right;
+        }
+        if (op == "<=") {
+            return left <= right;
+        }
+        if (op == ">") {
+            return left > right;
+        }
+        if (op == "<") {
+            return left < right;
+        }
     }
 
     // string porovnanie: "abc" == "abc"
@@ -210,8 +222,12 @@ bool NetRunner::evaluateGuard(const QString &guard) const
         QString left  = ms.captured(1);
         QString op    = ms.captured(2);
         QString right = ms.captured(3);
-        if (op == "==") return left == right;
-        if (op == "!=") return left != right;
+        if (op == "==") {
+            return left == right;
+        }
+        if (op == "!=") {
+            return left != right;
+        }
     }
 
     // ak nevieme vyhodnotit, prepustime

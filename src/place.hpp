@@ -15,7 +15,10 @@
  */
 class Place {
 public:
-    /** @brief Konstruktor miesta. @param id Identifikator. @param initialTokens Pociatocny pocet tokenov. */
+    /** @brief Konstruktor miesta. 
+     * @param id Identifikator. 
+     * @param initialTokens Pociatocny pocet tokenov. 
+     * */
     Place(const QString &id, int initialTokens = 0);
 
     /** @brief Vrati identifikator miesta. */

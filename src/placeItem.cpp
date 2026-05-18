@@ -12,9 +12,6 @@
 
 /**
  * @brief Vytvorenie grafickej reprezentácie miesta.
- * 
- * @param place Objekt reprezentujúci súvisiaci miesto.
- * @param parent Rodičovský objekt.
  */
 PlaceItem::PlaceItem(std::shared_ptr<Place> place, QGraphicsItem *parent)
     : QGraphicsEllipseItem(-R, -R, 2*R, 2*R, parent)
@@ -35,16 +32,13 @@ void PlaceItem::refresh() {
 }
 
 /**
- * @brief Hlavná vykresľovacia metóda miesta.
+ * @brief Hlavna vykreslovacia metoda.
  * 
- * Vykreslí obrys, názov a počet tokenov (ak je väčší ako 1).
- * Vybrané miesto je zafarbené sivo.
- * Sfarbenie miesta sa mení podľa počtu tokenov.
+ * Vykresli obrys, nazov a pocet tokenov (ak je vacsi ako 1).
+ * Vybrane miesto je zafarbene sivo.
+ * Sfarbenie miesta sa meni podla poctu tokenov.
  */
-void PlaceItem::paint(QPainter *painter,
-                      const QStyleOptionGraphicsItem *option,
-                      QWidget *widget)
-{
+void PlaceItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(option) Q_UNUSED(widget)
 
     // farba podla tokenov
@@ -53,45 +47,41 @@ void PlaceItem::paint(QPainter *painter,
     painter->setPen(QPen(Qt::black, 2));
 
     // obrys na zakliknutom mieste
-    if (isSelected()) painter->setPen(QPen(Qt::gray, 3));
+    if (isSelected()) {
+        painter->setPen(QPen(Qt::gray, 3));
+    }
 
     painter->drawEllipse(boundingRect()); // vykreslenie obrysu
 
-    // vykreslenie názvu miesta
+    // vykreslenie nazvu miesta
     painter->setFont(QFont("Arial", 9, QFont::Bold));
-    painter->drawText(boundingRect().adjusted(0, -10, 0, -10),
-                      Qt::AlignCenter, m_place->id());
+    painter->drawText(boundingRect().adjusted(0, -10, 0, -10), Qt::AlignCenter, m_place->id());
 
-    // vykreslenie počtu tokenov
+    // vykreslenie poctu tokenov
     if (m_place->tokens() > 0) {
         painter->setFont(QFont("Arial", 11, QFont::Bold));
-        painter->drawText(boundingRect().adjusted(0, 6, 0, 6),
-                          Qt::AlignCenter,
-                          QString::number(m_place->tokens()));
+        painter->drawText(boundingRect().adjusted(0, 6, 0, 6), Qt::AlignCenter, QString::number(m_place->tokens()));
     }
 }
 
 /**
- * @brief Zaisťuje pridanie nových hrán.
+ * @brief Zaistuje pridanie novych hran.
  */
-void PlaceItem::addArc(ArcItem *arc)
-{
+void PlaceItem::addArc(ArcItem *arc) {
     m_arcs.append(arc);
 }
 
 /**
- * @brief Hlavná metóda zaisťujúca vykresľovanie miest a hrán pri zmene pozície miesta.
+ * @brief Hlavna metoda zaistujuca vykreslovanie miest a hran pri zmene pozicie miesta.
  */
-QVariant PlaceItem::itemChange(GraphicsItemChange change, const QVariant &value)
-{
+QVariant PlaceItem::itemChange(GraphicsItemChange change, const QVariant &value) {
     if (change == ItemPositionHasChanged) {
-
         m_place->setPos(value.toPointF());
 
-        // nájde všetky pripojené hrany
+        // najde vsetky pripojene hrany
         for(ArcItem *arc : m_arcs) {
             if (arc) {
-                arc->updateGeometry(); // prekreslenie hrán
+                arc->updateGeometry(); // prekreslenie hran
             }
         }
     }
@@ -101,11 +91,10 @@ QVariant PlaceItem::itemChange(GraphicsItemChange change, const QVariant &value)
 
 
 /**
- * @brief Zaisťuje editáciu parametrov miesta.
+ * @brief Zaistuje editaciu parametrov miesta.
  * Spustenie dvojklikom na miesto.
  */
-void PlaceItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
+void PlaceItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
     Q_UNUSED(event);
 
     bool ok;
@@ -119,7 +108,9 @@ void PlaceItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         m_place->id(),
         &ok);
 
-    if (!ok || newId.isEmpty()) return;
+    if (!ok || newId.isEmpty()) {
+        return;
+    }
 
     // editacia tokenov
     int tokens = QInputDialog::getInt(
@@ -132,9 +123,11 @@ void PlaceItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
         1,
         &ok);
 
-    if (!ok) return;
-    
-    // aktualizácia parametrov
+    if (!ok) {
+        return;
+    }
+
+    // aktualizacia parametrov
     m_place->setId(newId);
     m_place->setTokens(tokens);
     update();

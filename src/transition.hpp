@@ -20,7 +20,7 @@ struct Arc {
 /**
  * @brief Prechod v Petriho sieti.
  *
- * Obsahuje podmienku odpálenia (event, guard, delay) a akciu.
+ * Obsahuje podmienku odpalenia (event, guard, delay) a akciu.
  */
 class Transition {
 public:

@@ -12,8 +12,7 @@
 class ArcItem;
 
 /**
- * @brief Graficka reprezentacia miesta — kreslí sa ako kruh.
- *
+ * @brief Graficka reprezentacia miesta — kresli sa ako kruh.
  * Farba kruhu sa meni podla poctu tokenov. Dvojklik otvori dialog pre editaciu.
  */
 class PlaceItem : public QGraphicsEllipseItem {
@@ -28,7 +27,7 @@ public:
     explicit PlaceItem(std::shared_ptr<Place> place,
                        QGraphicsItem *parent = nullptr);
 
-    /** @brief Prekreslí kruh po zmene tokenov. */
+    /** @brief Prekrelsli kruh po zmene tokenov. */
     void refresh();
     /** @brief Prida hranu pre aktualizaciu pri pohybe. */
     void addArc(ArcItem *arc);

@@ -10,7 +10,7 @@
 #include <memory>
 
 /**
- * @brief Nacita Petriho siet z textoveho suboru vo formate .pn
+ * @brief Nacita Petriho siet z textoveho suboru.
  */
 class Parser {
 public:

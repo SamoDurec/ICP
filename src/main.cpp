@@ -7,6 +7,9 @@
 #include <QApplication>
 #include "mainWindow.hpp"
 
+/**
+ * @brief Vstupny bod aplikacie, spusti aplikaciu a hlavne okno.
+ */
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     MainWindow w;

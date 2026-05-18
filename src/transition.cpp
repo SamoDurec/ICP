@@ -6,17 +6,16 @@
 
 #include "transition.hpp"
 /**
- * @brief Konštruktor prechodu.
+ * @brief Konstruktor prechodu.
  */
 Transition::Transition(const QString &id)
     : m_id(id)
 {}
 
 /**
- * @brief Nastaví nový identifikátor prechodu.
- * @param id Nový identifikátor.
+ * @brief Nastavi novy identifikator prechodu.
+ * @param id Novy identifikator.
  */
-void Transition::setId(const QString &id)
-{
+void Transition::setId(const QString &id) {
     m_id = id;
 }
